@@ -3,6 +3,15 @@
   yum:
     name: "epel-release"
     update_cache: yes
+    state: present
+  tags:
+    - install
+
+- name: install selinux python module
+  yum:
+    name: "libselinux-python"
+    update_cache: yes
+    state: present
   tags:
     - install
 
@@ -10,5 +19,6 @@
   yum:
     name: "nginx"
     update_cache: yes
+    state: present
   tags:
     - install
