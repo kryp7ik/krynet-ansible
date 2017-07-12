@@ -1,0 +1,14 @@
+---
+- name: install epel-repo
+  yum:
+    name: "epel-release"
+    update_cache: yes
+  tags:
+    - install
+
+- name: install nginx
+  yum:
+    name: "nginx"
+    update_cache: yes
+  tags:
+    - install

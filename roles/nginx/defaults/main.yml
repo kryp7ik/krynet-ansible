@@ -1,0 +1,5 @@
+---
+# defaults file for nginx
+nginx_port: 80
+nginx_root: /var/www/html
+nginx_index: index.html
