@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+server {
+    listen {{ item.server.listen }};
+    server_name {{ item.server.domain }};
+    root {{ item.server.root }}/{{ item.server.public_folder }};
+    {{ item.server.index_files }};
+
+    access_log = {{ item.server.access_log }}
+    error_log = {{ item.server.error_log_path }}
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}

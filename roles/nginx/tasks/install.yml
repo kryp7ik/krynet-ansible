@@ -1,24 +1,6 @@
 ---
-- name: install epel-repo
-  yum:
-    name: "epel-release"
-    update_cache: yes
-    state: present
-  tags:
-    - install
-
-- name: install selinux python module
-  yum:
-    name: "libselinux-python"
-    update_cache: yes
-    state: present
-  tags:
-    - install
-
 - name: install nginx
   yum:
     name: "nginx"
     update_cache: yes
     state: present
-  tags:
-    - install

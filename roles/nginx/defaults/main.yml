@@ -1,5 +1,23 @@
 ---
-# defaults file for nginx
+# If SELinux is enabled on the host change boolean to allow remote db connect
+selinux_remote_db: true
+open_http_ports_firewalld: true
+
+# Setting this to true will create the default site with the following parameters
+nginx_create_default_site: false
 nginx_port: 80
 nginx_root: /var/www/html
 nginx_index: index.html
+
+# Specify list of servers or 'none'
+nginx_php_sites:
+  - server:
+      domain: 'kryp7ik.com'
+      listen: '80'
+      root: '/var/www/kryp7ik'
+      public_folder: 'public'
+      index_files: 'index index.html index.htm index.php'
+      access_log: 'off'
+      error_log_path: '/var/log/nginx/kryp7ik-error.log'
+
+
