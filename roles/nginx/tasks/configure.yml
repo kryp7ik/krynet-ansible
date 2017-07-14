@@ -20,7 +20,7 @@
 - name: copy nginx conf file
   template:
     src: 'nginx.conf.j2'
-    dest: /etc/nginx/nginx.conf
+    dest: "/etc/nginx/nginx.conf"
     owner: root
     group: root
     mode: 0644
@@ -30,7 +30,7 @@
 
 - name: create sites-available and sites-enabled directories for vhosts
   file:
-    path: /etc/nginx/{{ item }}
+    path: "/etc/nginx/{{ item }}"
     state: directory
     owner: root
     group: root
@@ -42,15 +42,15 @@
 # Create default site if variable is set to true
 - name: create default site configurations
   template:
-    src: default.conf.j2
-    dest: /etc/nginx/sites-available/default.conf
+    src: "default.conf.j2"
+    dest: "/etc/nginx/sites-available/default.conf"
     mode: 0644
   when: nginx_create_default_site
 
 - name: enable default site
   file:
-    path: /etc/nginx/sites-enabled/default.conf
-    src: /etc/nginx/sites-available/default.conf
+    path: "/etc/nginx/sites-enabled/default.conf"
+    src: "/etc/nginx/sites-available/default.conf"
     state: link
   when: nginx_create_default_site
   notify:
@@ -69,7 +69,7 @@
 - name: copy default index file
   template:
     src: 'index.html.j2'
-    dest: {{ nginx_root }}/{{ nginx_index }}
+    dest: "{{ nginx_root }}/{{ nginx_index }}"
   when: nginx_create_default_site
 
 
@@ -77,14 +77,14 @@
 - name: create php vhosts
   template:
     src: 'php_vhost.conf.j2'
-    dest: /etc/nginx/sites-available/{{ item['server']['domain'] }}
+    dest: "/etc/nginx/sites-available/{{ item['server']['domain'] }}"
   with_items: nginx_php_sites
   when: nginx_php_sites != 'none'
 
 - name: create sym link to enable vhosts
   file:
-    path: /etc/nginx/sites-enabled/{{ item['server']['domain'] }}
-    src: /etc/nginx/sites-available/{{ item['server']['domain'] }}
+    path: "/etc/nginx/sites-enabled/{{ item['server']['domain'] }}"
+    src: "/etc/nginx/sites-available/{{ item['server']['domain'] }}"
     state: link
   with_items: nginx_php_sites
   when: nginx_php_sites != 'none'
