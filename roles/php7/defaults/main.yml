@@ -22,10 +22,10 @@ php_upload_tmp_dir: "/php/cache/upload_tmp"
 
 # packages to install
 php_packages:
-  - php{{ php_version }}-cli
-  - php{{ php_version }}-common
-  - php{{ php_version }}-fpm
-  - php{{ php_version }}-gd
-  - php{{ php_version }}-mysqlnd
-  - php{{ php_version }}-opcache
-  - php{{ php_version }}-pdo
+  - 'php{{ php_version }}-cli'
+  - 'php{{ php_version }}-common'
+  - 'php{{ php_version }}-fpm'
+  - 'php{{ php_version }}-gd'
+  - 'php{{ php_version }}-mysqlnd'
+  - 'php{{ php_version }}-opcache'
+  - 'php{{ php_version }}-pdo'
