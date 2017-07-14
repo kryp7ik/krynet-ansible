@@ -11,4 +11,5 @@
     name: "{{ item }}"
     update_cache: yes
     state: present
-  with_items: php_packages
+  with_items:
+    - "{{ php_packages }}"
