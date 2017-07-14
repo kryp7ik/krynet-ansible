@@ -1,2 +1,14 @@
-# epel-release
-# rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+---
+
+- name: install webtatic repo
+  yum:
+    name: 'https://mirror.webtatic.com/yum/el7/webtatic-release.rpm'
+    update_cache: yes
+    state: present
+
+- name: install php
+  yum:
+    name: {{ item }}
+    update_cache: yes
+    state: present
+  with_items: php_packages

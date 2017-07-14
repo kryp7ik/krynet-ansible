@@ -10,3 +10,8 @@
     name: "libselinux-python"
     update_cache: yes
     state: present
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
