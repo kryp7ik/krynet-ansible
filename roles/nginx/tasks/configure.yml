@@ -86,7 +86,7 @@
     path: "/etc/nginx/sites-enabled/{{ item['server']['domain'] }}"
     src: "/etc/nginx/sites-available/{{ item['server']['domain'] }}"
     state: link
-  with_items: nginx_php_sites
+  with_items: "{{ nginx_php_sites }}"
   when: nginx_php_sites != 'none'
   notify:
     - reload nginx service
