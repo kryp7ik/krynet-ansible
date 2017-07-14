@@ -58,7 +58,7 @@
 
 - name: create default site directory
   file:
-    path: {{ nginx_root }}
+    path: "{{ nginx_root }}"
     state: directory
     recurse: yes
     owner: nginx
