@@ -78,7 +78,7 @@
   template:
     src: 'php_vhost.conf.j2'
     dest: "/etc/nginx/sites-available/{{ item['server']['domain'] }}"
-  with_items: nginx_php_sites
+  with_items: "{{ nginx_php_sites }}"
   when: nginx_php_sites != 'none'
 
 - name: create sym link to enable vhosts
