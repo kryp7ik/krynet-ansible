@@ -1,17 +1,24 @@
 ---
-- name: install epel-repo
+- name: install epel repo
   yum:
     name: "epel-release"
     update_cache: yes
     state: present
+  tags: ['install']
 
-- name: install selinux python module
+- name: install selinux python packages
   yum:
-    name: "libselinux-python"
+    name: "{{ item }}"
     update_cache: yes
     state: present
+  with_items:
+    - 'policycoreutils-python'
+    - 'libselinux-python'
+    - 'libsemanage-python'
+  tags: ['install']
 
 - name: upgrade all packages
   yum:
     name: '*'
     state: latest
+  tags: ['install']
