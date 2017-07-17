@@ -3,7 +3,7 @@
 php_version: "71w"
 
 # php.ini options
-php_allow_url_fopen: "Off"
+php_allow_url_fopen: "On"
 php_timezone: "America/Detroit"
 php_disable_functions: "exec,passthru,shell_exec,system,proc_open,popen"
 php_display_errors: "Off"
@@ -30,3 +30,6 @@ php_packages:
   - 'php{{ php_version }}-opcache'
   - 'php{{ php_version }}-pdo'
   - 'php{{ php_version }}-mcrypt'
+
+# php_allow_url_fopen must be set to 'on' for composer installation
+install_composer: true

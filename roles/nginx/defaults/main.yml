@@ -19,5 +19,3 @@ nginx_php_sites: 'none'
 #      index_files: 'index index.html index.htm index.php'
 #      access_log: 'off'
 #      error_log_path: '/var/log/nginx/kryp7ik-error.log'
-
-

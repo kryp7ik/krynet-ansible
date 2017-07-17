@@ -1,0 +1,9 @@
+---
+# defaults file for haproxy
+enable_ha_stats: true
+ha_stats_user: 'kryptik'
+ha_stats_password: 'Password!'
+ha_stats_bind_port: 8080
+
+ha_front_bind_addr: '*'
+ha_front_bind_port: 80

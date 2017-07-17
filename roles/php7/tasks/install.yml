@@ -12,3 +12,13 @@
     update_cache: yes
     state: present
   with_items: "{{ php_packages }}"
+
+- name: download composer
+  shell: 'curl -sS https://getcomposer.org/installer | php'
+  args:
+    chdir: '/tmp'
+  when: install_composer
+
+- name: install composer
+  command: 'mv /tmp/composer.phar /usr/local/bin/composer'
+  when: install_composer

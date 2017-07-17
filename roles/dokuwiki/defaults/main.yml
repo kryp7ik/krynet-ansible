@@ -7,6 +7,8 @@ root_folder: '/var/www/dokuwiki'
 index_file: 'doku.php'
 wiki_domain: 'wiki.krynet.com'
 max_upload_file_size: '4M'
+ssl_cert: '/etc/ssl/certs/dokuwiki.crt'
+ssl_key: '/etc/ssl/private/dokuwiki.key'
 
 # ownership
 dokuwiki_user: 'dokuwiki'

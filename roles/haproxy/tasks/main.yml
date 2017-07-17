@@ -1,0 +1,19 @@
+---
+# tasks file for haproxy
+- name: install haproxy
+  yum:
+    name: haproxy
+    state: installed
+
+- name: create haproxy configuration file
+  template:
+    src: haproxy.cfg.j2
+    dest: '/etc/haproxy/haproxy.cfg'
+    mode: 0644
+  notify: restart haproxy
+
+- name: enable haproxy to start on boot
+  service:
+    name: haproxy
+    state: started
+    enabled: yes

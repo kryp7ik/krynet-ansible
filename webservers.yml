@@ -1,9 +1,9 @@
 ---
 - hosts: webservers
   remote_user: kryptik
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - { role: base, tags: 'base' }
     - { role: php7, tags: 'php7' }
     - { role: nginx, tags: 'nginx' }
-    - { role: dokuwiki, tags: 'dokuwiki' }
