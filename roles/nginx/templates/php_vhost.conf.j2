@@ -6,8 +6,8 @@ server {
     root {{ item.server.root }}/{{ item.server.public_folder }};
     {{ item.server.index_files }};
 
-    access_log = {{ item.server.access_log }}
-    error_log = {{ item.server.error_log_path }}
+    access_log {{ item.server.access_log }};
+    error_log {{ item.server.error_log_path }};
 
     location / {
         try_files $uri $uri/ /index.php$is_args$args;

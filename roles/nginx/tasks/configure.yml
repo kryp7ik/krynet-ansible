@@ -10,7 +10,13 @@
     - https
   when: open_http_ports_firewalld
 
-- name: SELinux allow connect to remote db
+- name: SELinux boolean allow httpd network access
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+
+- name: SELinux boolean allow connect to remote db
   seboolean:
     name: httpd_can_network_connect_db
     state: true

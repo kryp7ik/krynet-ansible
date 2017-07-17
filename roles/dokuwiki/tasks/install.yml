@@ -1,0 +1,79 @@
+- name: create dokuwiki group
+  group:
+    name: '{{ dokuwiki_group }}'
+    system: yes
+    state: 'present'
+
+- name: create dokuwiki user
+  user:
+    name: '{{ dokuwiki_user }}'
+    group: '{{ dokuwiki_group }}'
+    shell: '/bin/false'
+    createhome: no
+    system: yes
+    state: 'present'
+
+- name: create dokuwiki root folder
+  file:
+    path: '{{ root_folder }}'
+    state: directory
+    group: '{{ dokuwiki_group }}'
+    owner: '{{ dokuwiki_user }}'
+    mode: 0750
+
+- name: download and extract dokuwiki
+  unarchive:
+    src: '{{ dokuwiki_source }}'
+    dest: '{{ root_folder }}'
+    extra_opts: ['--strip-components=1']
+    remote_src: yes
+    group: '{{ dokuwiki_group }}'
+    owner: '{{ dokuwiki_user }}'
+    mode: 0750
+
+- name: create php-fpm socket config file
+  template:
+    src: 'php_pool.conf.j2'
+    dest: '/etc/php-fpm.d/{{ dokuwiki_user }}.conf'
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart php-fpm service
+
+- name: create nginx virtual host
+  template:
+    src: 'dokuwiki_ssl_vhost.jw'
+    dest: '/etc/nginx/sites-available/{{ wiki_domain }}'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: create sym link to enable vhost
+  file:
+    src: '/etc/nginx/sites-available/{{ wiki_domain }}'
+    path: '/etc/nginx/sites-enabled/{{ wiki_domain }}'
+    state: link
+  notify:
+    - reload nginx service
+
+- name: modify selinux fcontext for web root directory
+  sefcontext:
+    target: '{{ root_folder }}(/.*)?'
+    setype: httpd_sys_content_t
+    state: present
+
+- name: modify selinux fcontext for conf/
+  sefcontext:
+    target: '{{ root_folder }}/conf(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+
+- name: modify selinux fcontext for data/
+  sefcontext:
+    target: '{{ root_folder }}/data(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+
+
+# https://www.dokuwiki.org/install:permissions

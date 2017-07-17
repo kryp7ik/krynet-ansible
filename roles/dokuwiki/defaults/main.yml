@@ -1,0 +1,16 @@
+---
+# paths and resources
+dokuwiki_source: 'https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz'
+root_folder: '/var/www/dokuwiki'
+
+# configuration options for nginx server block
+index_file: 'doku.php'
+wiki_domain: 'wiki.krynet.com'
+max_upload_file_size: '4M'
+
+# ownership
+dokuwiki_user: 'dokuwiki'
+dokuwiki_group: 'dokuwiki'
+webserver_user: 'nginx'
+webserver_group: 'nginx'
+

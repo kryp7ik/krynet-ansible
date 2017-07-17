@@ -29,3 +29,4 @@ php_packages:
   - 'php{{ php_version }}-mysqlnd'
   - 'php{{ php_version }}-opcache'
   - 'php{{ php_version }}-pdo'
+  - 'php{{ php_version }}-mcrypt'

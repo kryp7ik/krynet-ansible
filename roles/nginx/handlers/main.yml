@@ -1,7 +1,7 @@
 ---
 # handlers file for nginx
 - name: restart nginx service
-  service: name=nginx state=restarted
+  service: name=nginx enabled=yes state=restarted
 
 - name: reload nginx service
-  service: name=nginx state=reloaded
+  service: name=nginx enabled=yes state=reloaded

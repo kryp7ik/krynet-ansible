@@ -10,14 +10,14 @@ nginx_root: /var/www/html
 nginx_index: index.html
 
 # Specify list of servers or 'none'
-nginx_php_sites:
-  - server:
-      domain: 'kryp7ik.com'
-      listen: '80'
-      root: '/var/www/kryp7ik'
-      public_folder: 'public'
-      index_files: 'index index.html index.htm index.php'
-      access_log: 'off'
-      error_log_path: '/var/log/nginx/kryp7ik-error.log'
+nginx_php_sites: 'none'
+#  - server:
+#      domain: 'kryp7ik.com'
+#      listen: '80'
+#      root: '/var/www/kryp7ik'
+#      public_folder: 'public'
+#      index_files: 'index index.html index.htm index.php'
+#      access_log: 'off'
+#      error_log_path: '/var/log/nginx/kryp7ik-error.log'
 
 
