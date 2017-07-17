@@ -6,3 +6,4 @@
     - { role: base, tags: 'base' }
     - { role: php7, tags: 'php7' }
     - { role: nginx, tags: 'nginx' }
+    - { role: dokuwiki, tags: 'dokuwiki' }

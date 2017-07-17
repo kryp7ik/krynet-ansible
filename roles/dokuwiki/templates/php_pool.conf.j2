@@ -3,7 +3,7 @@
 user = {{ dokuwiki_user }}
 group = {{ dokuwiki_group }}
 
-listen = /var/run/php-fpm/php-fpm-{{ dokuwiki_user }}.sock
+listen = /var/run/php-fpm/{{ dokuwiki_user }}.sock
 ;listen.backlog = 511
 listen.owner = {{ webserver_user }}
 listen.group = {{ webserver_group }}

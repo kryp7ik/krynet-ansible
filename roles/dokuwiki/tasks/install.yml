@@ -43,7 +43,7 @@
 
 - name: create nginx virtual host
   template:
-    src: 'dokuwiki_ssl_vhost.jw'
+    src: 'dokuwiki_ssl_vhost.j2'
     dest: '/etc/nginx/sites-available/{{ wiki_domain }}'
     owner: root
     group: root
