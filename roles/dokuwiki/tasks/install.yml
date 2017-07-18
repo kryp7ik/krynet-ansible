@@ -75,5 +75,8 @@
     setype: httpd_sys_rw_content_t
     state: present
 
+- name: running restorecon
+  command: 'restorecon -R {{ root_folder }}'
+
 
 # https://www.dokuwiki.org/install:permissions

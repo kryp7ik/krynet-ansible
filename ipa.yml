@@ -1,0 +1,13 @@
+---
+- hosts: freeipa
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: ipa_admin_pass
+      prompt: 'Please type in the admin password'
+
+    - name: ipa_dm_pass
+      prompt: 'Please type in the admin directory manager password'
+  roles:
+    - { role: freeipa, tags: 'freeipa' }

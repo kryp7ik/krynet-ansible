@@ -1,0 +1,11 @@
+---
+# defaults file for freeipa
+ipa_packages:
+  - ipa-server
+  - bind
+  - bind-dyndb-ldap
+
+ipa_domain: 'ipa.krynet.com'
+ipa_realm: 'IPA.KRYNET.COM'
+ipa_dns_forward: '8.8.8.8'
+ipa_id_start: 3000

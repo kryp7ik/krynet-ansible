@@ -1,0 +1,36 @@
+---
+- name: install freeipa packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ipa_packages }}"
+
+- name: run install command
+  command: >
+    ipa-server-install -U
+    -a {{ ipa_admin_pass }}
+    -p {{ ipa_dm_pass }}
+    -n {{ ipa_domain }}
+    -r {{ ipa_realm }}
+    --hostname={{ ansible_fqdn }}
+    --ip-address={{ ansible_eth0.ipv4.address }}
+    --idstart={{ ipa_id_start }}
+    --mkhomedir
+    --setup-dns
+    --forwarder={{ ipa_dns_forward }}
+  args:
+    creates: '/etc/ipa/default.conf'
+
+- name: open ports on firewall
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+    - https
+    - ldaps
+    - kerberos
+    - kpasswd
+    - dns
+    - ntp

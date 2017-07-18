@@ -13,12 +13,17 @@
     state: present
   with_items: "{{ php_packages }}"
 
+- name: check if composer is already installed
+  stat:
+    path: '/usr/local/bin/composer'
+  register: composer_check
+
 - name: download composer
   shell: 'curl -sS https://getcomposer.org/installer | php'
   args:
     chdir: '/tmp'
-  when: install_composer
+  when: install_composer and composer_check.exists == False
 
 - name: install composer
   command: 'mv /tmp/composer.phar /usr/local/bin/composer'
-  when: install_composer
+  when: install_composer and composer_check.exists == False
