@@ -1,7 +1,8 @@
 ---
-# defaults file for freeipa
+# defaults file for ipa-server
 ipa_packages:
   - ipa-server
+  - ipa-server-dns
   - bind
   - bind-dyndb-ldap
 

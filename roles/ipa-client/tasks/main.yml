@@ -1,0 +1,14 @@
+---
+# from ipa-server
+# kinit admin
+# ipa host-add client.krynet.com --random
+# need to grab value from "Random Password: DerfmkDES3442"
+
+# tasks file for ipa-client
+# cmd: ipa-client-install --unattended --hostname client.krynet.com --server freeipa.krynet.com --domain ipa.krynet.com --realm IPA.KRYNET.COM --password 'DerfmkDES3442'
+# optionally add --enable-dns-updates to auto update dns records of ipa-server if using integrated dns
+# check client can obtain info about users on server.... client ~$ id admin
+
+
+ipa_client_packages:
+  - ipa-client

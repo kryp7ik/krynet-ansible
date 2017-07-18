@@ -1,5 +1,5 @@
 ---
-- name: install freeipa packages
+- name: install ipa-server packages
   yum:
     name: "{{ item }}"
     state: present
@@ -28,7 +28,9 @@
     state: enabled
     immediate: yes
   with_items:
+    - http
     - https
+    - ldap
     - ldaps
     - kerberos
     - kpasswd
