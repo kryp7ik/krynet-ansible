@@ -1,2 +1,6 @@
 ---
 # defaults file for ipa-client
+
+ipa_server: 'ipa.krynet.com'
+ipa_domain: 'krynet.com'
+ipa_realm: 'IPA.KRYNET.COM'

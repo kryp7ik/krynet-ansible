@@ -1,0 +1,14 @@
+---
+- hosts: all
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: ipa_principal
+      prompt: 'Enrollment username (principal)'
+      private: no
+
+    - name: ipa_principal_pass
+      prompt: 'Enrollment user password'
+  roles:
+    - { role: ipa-client, tags: 'ipa-client' }

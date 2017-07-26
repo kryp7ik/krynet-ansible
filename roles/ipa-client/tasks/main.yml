@@ -1,14 +1,27 @@
 ---
-# from ipa-server
-# kinit admin
-# ipa host-add client.krynet.com --random
-# need to grab value from "Random Password: DerfmkDES3442"
 
-# tasks file for ipa-client
-# cmd: ipa-client-install --unattended --hostname client.krynet.com --server freeipa.krynet.com --domain ipa.krynet.com --realm IPA.KRYNET.COM --password 'DerfmkDES3442'
-# optionally add --enable-dns-updates to auto update dns records of ipa-server if using integrated dns
-# check client can obtain info about users on server.... client ~$ id admin
+- name: checking if host is already enrolled
+  stat:
+    path: '/etc/krb5.conf'
+  register: krb5_stat
 
+- name: installing ipa-client-install
+  yum:
+    name: 'ipa-client'
+    update_cache: yes
+    state: present
 
-ipa_client_packages:
-  - ipa-client
+- name: enrolling host
+  command: >
+    ipa-client-install
+    --unattended
+    --hostname {{ ansible_hostname }}
+    --server {{ ipa_server }}
+    --domain {{ ipa_domain }}
+    --realm {{ ipa_realm }}
+    --principal {{ ipa_principal }}
+    --password {{ ipa_principal_pass }}
+    --ssh-trust-dns
+    --mkhomedir
+    --enable-dns-updates
+  when: krb5_stat.stat.exists == False
