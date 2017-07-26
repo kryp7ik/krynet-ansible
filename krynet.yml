@@ -1,3 +1,4 @@
 ---
+- include: ipa.yml
 - include: webservers.yml
 - include: loadbalancer.yml

@@ -14,7 +14,7 @@
   command: >
     ipa-client-install
     --unattended
-    --hostname {{ ansible_hostname }}
+    --hostname {{ ansible_fqdn }}
     --server {{ ipa_server }}
     --domain {{ ipa_domain }}
     --realm {{ ipa_realm }}
