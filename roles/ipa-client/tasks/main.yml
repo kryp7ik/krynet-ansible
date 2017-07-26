@@ -1,9 +1,8 @@
 ---
 
 - name: checking if host is already enrolled
-  stat:
-    path: '/etc/krb5.conf'
-  register: krb5_stat
+  shell: 'cat /etc/krb5.conf'
+  register: krb5_conf
 
 - name: installing ipa-client-install
   yum:
@@ -24,4 +23,4 @@
     --ssh-trust-dns
     --mkhomedir
     --enable-dns-updates
-  when: krb5_stat.stat.exists == False
+  when: krb5_conf.stdout.find('# EXAMPLE.COM') != -1
