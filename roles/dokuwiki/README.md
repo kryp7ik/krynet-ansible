@@ -1,38 +1,63 @@
-Role Name
+Kryp7ik Dokuwiki
 =========
 
-A brief description of the role goes here.
+This role will install Dokuwiki on a CentOS/RHEL 7 host(s).
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Host must have Nginx and PHP installed
 
 Role Variables
 --------------
+The following are all the variables and their default values
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Paths & Resources
+```
+dokuwiki_source: 'https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz'
+root_folder: '/var/www/dokuwiki'
+```
+
+Configuration options for nginx server block
+```
+index_file: 'doku.php'
+wiki_domain: 'wiki.mydomain.com'
+max_upload_file_size: '4M'
+ssl_cert: '/etc/ssl/certs/dokuwiki.crt'
+ssl_key: '/etc/ssl/private/dokuwiki.key'
+```
+Ownership (the webserver_user and group must be set according to the Nginx install these variables have no impact on the nginx role)
+```
+dokuwiki_user: 'dokuwiki'
+dokuwiki_group: 'dokuwiki'
+webserver_user: 'nginx'
+webserver_group: 'nginx'
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Either install Nginx & PHP manually or use the roles contained in this repo (nginx, php7)
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This is an example playbook using the roles in this repo
 
-    - hosts: servers
+
+    - hosts: webservers
+      remote_user: USERNAME
+      become: yes
+      become_method: sudo
       roles:
-         - { role: username.rolename, x: 42 }
+        - { role: base, tags: 'base' }
+        - { role: php7, tags: 'php7' }
+        - { role: nginx, tags: 'nginx' }
+        - { role: dokuwiki, tags: 'dokuwiki' }
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

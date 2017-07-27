@@ -1,38 +1,55 @@
-Role Name
+Kryp7ik ipa-client
 =========
 
-A brief description of the role goes here.
+This role is designed to enroll hosts running CentOS/RHEL 7 with a FreeIPA server
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Must have an active FreeIPA server with DNS along with credentials to authenticate the host
+with the IPA server.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    ipa_server: 'ipa.krynet.com'
+    ipa_domain: 'krynet.com'
+    ipa_realm: 'IPA.KRYNET.COM'
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
+_The hostname should be set on the hosts (prior to running the playbook) to match your domain because this playbook uses the hostname
+to create the DNS entry on the ipa server._
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Given the host(s) you are enrolling most likely do not have DNS records at this point I recommend running this playbook
+by it self and specifying the host(s) via the -i flag...
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+    $ ansible-playbook -K -i 192.168.1.10,192.168.1.11 ipa-client-playbook.yml
+
+ipa-client-playbook.yml
+```
+- hosts: all
+  remote_user: USERNAME
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: ipa_principal
+      prompt: 'Enrollment username (principal)'
+      private: no
+
+    - name: ipa_principal_pass
+      prompt: 'Enrollment user password'
+  roles:
+    - { role: ipa-client, tags: 'ipa-client' }
+```
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

@@ -1,38 +1,72 @@
-Role Name
+Kryp7ik PHP7
 =========
 
-A brief description of the role goes here.
+This role will install PHP 7 on a CentOS/RHEL 7 host.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+---
+    # php version to install
+    php_version: "71w"
+    
+    # php.ini options
+    php_allow_url_fopen: "On"
+    php_timezone: "America/Detroit"
+    php_disable_functions: "exec,passthru,shell_exec,system,proc_open,popen"
+    php_display_errors: "Off"
+    debug_mode: false
+    php_error_reporting: "E_ALL & ~E_DEPRECATED & ~E_STRICT"
+    php_memory_limit: "1024M"
+    php_opcache_enable: 1
+    php_opcache_revalidate_freq: 0
+    php_post_max_size: "20M"
+    php_serialize_precision: 17
+    php_session_cookie_httponly: 1
+    php_session_use_strict_mode: 1
+    php_soap_wsdl_cache_dir: '/php/cache/wsdl'
+    php_upload_max_filesize: "20M"
+    php_upload_tmp_dir: "/php/cache/upload_tmp"
+    
+    # packages to install
+    php_packages:
+      - 'php{{ php_version }}-cli'
+      - 'php{{ php_version }}-common'
+      - 'php{{ php_version }}-fpm'
+      - 'php{{ php_version }}-gd'
+      - 'php{{ php_version }}-mysqlnd'
+      - 'php{{ php_version }}-opcache'
+      - 'php{{ php_version }}-pdo'
+      - 'php{{ php_version }}-mcrypt'
+    
+    # php_allow_url_fopen must be set to 'on' for composer installation
+    install_composer: true
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+'base' role found in this repository or manually install the following packages
+
+    $ yum install epel-release policycoreutils-python libselinux-python libsemanage-python
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - hosts: webservers
+      remote_user: kryptik
+      become: yes
+      become_method: sudo
       roles:
-         - { role: username.rolename, x: 42 }
+        - { role: base, tags: 'base' }
+        - { role: php7, tags: 'php7' }
+        - { role: nginx, tags: 'nginx' }
 
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

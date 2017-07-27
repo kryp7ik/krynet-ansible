@@ -1,38 +1,53 @@
-Role Name
+Kryp7ik ipa-server
 =========
 
-A brief description of the role goes here.
+This role will install a full IPA server with DNS on a CentOS/RHEL 7 host
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Ensure that you set the hostname on the host to match the domain that you will be configuring the DNS for.
+For example if the domain is krynet.com set the hostname to ipa.krynet.com
 
 Role Variables
 --------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    
+    ipa_domain: 'ipa.krynet.com'
+    ipa_realm: 'IPA.KRYNET.COM'
+    ipa_dns_forward: '8.8.8.8'
+    
+    # Specify the number to start incrementing uid's from
+    ipa_id_start: 3000
+    
+    # The admin password
+    ipa_admin_pass: 'secret'
+    
+    # The admin directory manager password
+    ipa_dm_pass: 'anothersecret'
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - hosts: ipa-server
+      remote_user: USERNAME
+      become: yes
+      become_method: sudo
+      vars_prompt:
+        - name: ipa_admin_pass
+          prompt: 'Please type in the admin password'
+    
+        - name: ipa_dm_pass
+          prompt: 'Please type in the admin directory manager password'
       roles:
-         - { role: username.rolename, x: 42 }
+        - { role: ipa-server, tags: 'ipa-server' }
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
