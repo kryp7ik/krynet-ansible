@@ -1,0 +1,80 @@
+---
+
+- name: open firewall ports
+  firewalld:
+    port: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+    - '3306/tcp'
+    - '4567/tcp'
+    - '4567/udp'
+    - '873/tcp'
+    - '4444/tcp'
+    - '9200/tcp'
+
+- name: starting mysql service on master node
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  when: inventory_hostname == galera_master_node
+
+- include: selinux.yml
+  when: host_has_selinux
+
+- name: creating /root/.my.cnf
+  template:
+    src: 'user.my.cnf.j2'
+    dest: '/root/.my.cnf'
+    owner: root
+    group: root
+    mode: 0640
+
+- name: create server.cnf
+  template:
+    src: 'server.cnf.j2'
+    dest: '/etc/my.cnf.d/server.cnf'
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
+- name: create mysql root user
+  mysql_user:
+    name: root
+    host: '{{ item }}'
+    password: '{{ galera_root_password }}'
+    priv: '*.*:ALL,GRANT'
+    state: present
+  with_items:
+    - '{{ ansible_hostname }}'
+    - '127.0.0.1'
+    - '::1'
+    - 'localhost'
+  when: inventory_hostname == galera_master_node
+
+- name: remove test database
+  mysql_db:
+    name: test
+    state: absent
+  when: inventory_hostname == galera_master_node
+
+- name: disable anonymous login
+  mysql_user:
+    name: ""
+    state: absent
+  when: inventory_hostname == galera_master_node
+  notify: stop mysql
+
+- name: running galera_new_cluster on master node
+  command: '/bin/galera_new_cluster'
+  when: inventory_hostname == galera_master_node
+
+- name: starting and enabling mysql service on slave nodes
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  when: inventory_hostname != galera_master_node

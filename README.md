@@ -1,2 +1,2 @@
 # krynet-ansible
-Learning Ansible. Creating playbooks for homelab.
+Learning Ansible. Creating playbooks and roles for my homelab.

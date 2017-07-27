@@ -1,0 +1,27 @@
+---
+
+- name: add mariadb repository
+  copy:
+    src: 'mariadb.repo'
+    dest: '/etc/yum.repos.d/MariaDB.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: import GPG key
+  rpm_key:
+    key: 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
+    state: present
+
+- name: install mariadb packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - 'MariaDB-server'
+    - 'MariaDB-client'
+    - 'galera'
+    - 'MySQL-python'
+    - 'rsync'
+    - 'checkpolicy'
+    - 'policycoreutils-python'
