@@ -73,7 +73,12 @@
     name: ""
     state: absent
   when: inventory_hostname == galera_master_node
-  notify: stop mysql
+
+- name: stopping mysql service on master node
+  service:
+    name: mysql
+    state: stopped
+  when: inventory_hostname == galera_master_node
 
 - name: running galera_new_cluster on master node
   command: '/bin/galera_new_cluster'
@@ -81,7 +86,7 @@
 
 - name: waiting for master node to become available
   wait_for:
-    host: '{{ galera_master_node }}
+    host: '{{ galera_master_node }}'
     port: 4567
     state: started
   when: inventory_hostname != galera_master_node
