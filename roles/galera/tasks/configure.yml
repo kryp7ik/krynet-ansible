@@ -24,6 +24,14 @@
 - include: selinux.yml
   when: host_has_selinux
 
+- name: create mysql root user
+  mysql_user:
+    name: root
+    password: '{{ galera_root_password }}'
+    host: 'localhost'
+    state: present
+  when: inventory_hostname == galera_master_node
+
 - name: creating /root/.my.cnf
   template:
     src: 'user.my.cnf.j2'
@@ -41,12 +49,11 @@
     mode: 0644
     backup: yes
 
-- name: create mysql root user
+- name: disable remote root login
   mysql_user:
     name: root
     host: '{{ item }}'
     password: '{{ galera_root_password }}'
-    priv: '*.*:ALL,GRANT'
     state: present
   with_items:
     - '{{ ansible_hostname }}'
@@ -71,6 +78,13 @@
 - name: running galera_new_cluster on master node
   command: '/bin/galera_new_cluster'
   when: inventory_hostname == galera_master_node
+
+- name: waiting for master node to become available
+  wait_for:
+    host: '{{ galera_master_node }}
+    port: 4567
+    state: started
+  when: inventory_hostname != galera_master_node
 
 - name: starting and enabling mysql service on slave nodes
   service:

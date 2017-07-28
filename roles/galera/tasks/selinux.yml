@@ -4,19 +4,24 @@
     src: 'galera_cluster.te'
     dest: '/tmp/'
 
-- command: '/usr/bin/checkmodule -M -m -o galera_cluster.mod /tmp/galera_cluster.te'
+- name: checking the selinux module
+  command: '/usr/bin/checkmodule -M -m -o galera_cluster.mod /tmp/galera_cluster.te'
 
-- command: '/usr/bin/semodule_package -m galera_cluster.mod -o /tmp/galera_cluster.pp'
+- name: creating semodule package
+  command: '/usr/bin/semodule_package -m galera_cluster.mod -o /tmp/galera_cluster.pp'
 
-- command: '/usr/sbin/semodule -i /tmp/galera_cluster.pp'
+- name: installing semodule
+  command: '/usr/sbin/semodule -i /tmp/galera_cluster.pp'
 
-- seport:
+- name: setting setype on tcp ports
+  seport:
     ports: 3306,4567,873,4444,9200
     proto: tcp
     setype: mysqld_port_t
     state: present
 
-- seport:
+- name: setting setype on udp ports
+  seport:
     ports: 4567
     proto: udp
     setype: mysqld_port_t
