@@ -5,12 +5,19 @@
     name: haproxy
     state: installed
 
-- name: create haproxy configuration file
-  template:
-    src: haproxy.cfg.j2
-    dest: '/etc/haproxy/haproxy.cfg'
-    mode: 0644
-  notify: restart haproxy
+- include: nginx.yml
+  when: hap_role == 'webserver'
+
+- include: galera.yml
+  when: hap_role == 'galera'
+
+- name: open firewall for haproxy stats
+  firewalld:
+    port: '{{ ha_stats_bind_port }}'
+    permanent: true
+    state: enabled
+    immediate: yes
+  when: enable_ha_stats
 
 - name: enable haproxy to start on boot
   service:

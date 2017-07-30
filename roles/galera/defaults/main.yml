@@ -5,3 +5,6 @@ galera_cluster_name: 'galera_cluster'
 galera_cluster_inventory_group: 'galera_nodes'
 galera_master_node: '{{ groups[galera_cluster_inventory_group][0] }}'
 host_has_selinux: True
+
+# If true xinet and clustercheck will be installed
+install_clustercheck: True

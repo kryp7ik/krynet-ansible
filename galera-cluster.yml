@@ -1,0 +1,12 @@
+---
+- hosts: galera_nodes
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: galera_root_password
+      prompt: 'Enter the desired mysql root users password'
+      private: yes
+
+  roles:
+    - { role: galera, tags: 'galera' }

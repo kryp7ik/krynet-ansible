@@ -22,31 +22,31 @@ global
     user        haproxy
     group       haproxy
     daemon
-    # turn on stats unix socket
+
+    {% if enable_ha_stats %}
     stats socket /var/lib/haproxy/stats
+    {% endif %}
+
 #---------------------------------------------------------------------
 # common defaults that all the 'listen' and 'backend' sections will
 # use if not designated in their block
 #---------------------------------------------------------------------
 defaults
-    mode                    http
+    # changed mode to tcp for galera cluster
+    mode                    tcp
     log                     global
-    option                  httplog
+    option                  tcplog
     option                  dontlognull
-    option http-server-close
-    option forwardfor       except 127.0.0.0/8
     option                  redispatch
     retries                 3
-    timeout http-request    10s
-    timeout queue           1m
     timeout connect         10s
     timeout client          1m
     timeout server          1m
-    timeout http-keep-alive 10s
     timeout check           10s
-    maxconn                 3000
+    maxconn                 1024
 
-{% if enable_ha_stats == true %}
+
+{% if enable_ha_stats %}
 #---------------------------------------------------------------------
 #HAProxy Monitoring Config
 #---------------------------------------------------------------------
@@ -68,16 +68,17 @@ listen haproxy3-monitoring *:{{ ha_stats_bind_port }}
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend  main
-    bind {{ ha_front_bind_addr }}:{{ ha_front_bind_port }}
-    default_backend app
+    bind {{ ha_galera_frontend_addr }}:{{ ha_galera_frontend_port }}
+
+    default_backend galera
 
 #---------------------------------------------------------------------
 # round robin balancing between the various backends
 #---------------------------------------------------------------------
-backend app
-    balance     roundrobin
-    option httpchk HEAD / HTTP/1.1\r\nHost:localhost
+backend galera
+    balance     leastconn
+    option httpchk
 
-    {% for host in groups['webservers'] %}
-    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:80 check
+    {% for host in groups[ha_galera_inventory_group] %}
+    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:{{ ha_galera_backend_port }} check port {{ ha_galera_check_port }}
     {% endfor %}

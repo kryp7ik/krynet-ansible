@@ -1,0 +1,118 @@
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    # to have these messages end up in /var/log/haproxy.log you will
+    # need to:
+    #
+    # 1) configure syslog to accept network log events.  This is done
+    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
+    #    /etc/sysconfig/syslog
+    #
+    # 2) configure local2 events to go to the /var/log/haproxy.log
+    #   file. A line like the following can be added to
+    #   /etc/sysconfig/syslog
+    #
+    #    local2.*                       /var/log/haproxy.log
+    #
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    {% if enable_ha_stats %}
+    stats socket /var/lib/haproxy/stats
+    {% endif %}
+
+    {% if ha_webserver_ssl %}
+    tune.ssl.default-dh-param 2048
+    {% endif %}
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 2048
+
+{% if enable_ha_stats %}
+#---------------------------------------------------------------------
+#HAProxy Monitoring Config
+#---------------------------------------------------------------------
+listen haproxy3-monitoring *:{{ ha_stats_bind_port }}
+    mode http
+    option forwardfor
+    option httpclose
+    stats enable
+    stats show-legends
+    stats refresh 5s
+    stats uri /stats
+    stats realm Haproxy\ Statistics
+    stats auth {{ ha_stats_user }}:{{ ha_stats_password }}
+    stats admin if TRUE
+    default_backend app
+{% endif %}
+
+#---------------------------------------------------------------------
+# http front end
+#---------------------------------------------------------------------
+frontend  http
+    bind {{ ha_webserver_front_bind_addr }}:{{ ha_webserver_front_bind_port }}
+    reqadd X-Forwarded-Proto:\ http
+    default_backend app
+
+{% if ha_webserver_ssl %}
+#--------------------------------------------------------------------
+# https front end
+#--------------------------------------------------------------------
+frontend https
+
+    bind {{ ha_webserver_front_bind_addr }}:{{ ha_webserver_ssl_front_port }} ssl crt {{ ha_webserver_ssl_cert_path }}
+    reqadd X-Forwarded-Proto:\ https
+    acl letsencrypt-acl path_beg /.well-known/acme-challenge/
+    use_backend letsencrypt-backend if letsencrypt-acl
+    default_backend app
+
+{% endif %}
+
+#---------------------------------------------------------------------
+# round robin balancing between the various backends
+#---------------------------------------------------------------------
+backend app
+    balance     roundrobin
+    option httpchk HEAD / HTTP/1.1\r\nHost:localhost
+
+    {% if ha_webserver_ssl %}
+    redirect scheme https if !{ ssl_fc }
+    {% endif %}
+
+    {% for host in groups[ha_webserver_inventory_group] %}
+    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:{{ ha_webserver_backend_port }} check
+    {% endfor %}
+
+
+{% if ha_webserver_ssl %}
+#---------------------------------------------------------------------
+# letsencrypt backend for ssl renewal
+#---------------------------------------------------------------------
+backend letsencrypt-backend
+    server letsencrypt 127.0.0.1:54321
+
+{% endif %}

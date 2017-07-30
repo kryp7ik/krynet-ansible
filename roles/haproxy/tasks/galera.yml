@@ -1,0 +1,18 @@
+---
+
+- name: creating galera cluster haproxy configuration file
+  template:
+    src: galera.haproxy.cfg.j2
+    dest: '/etc/haproxy/haproxy.cfg'
+    mode: 0644
+  notify: restart haproxy
+
+- name: open firewall ports for galera
+  firewalld:
+    port: '{{ item }}'
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+    - '{{ ha_galera_frontend_port }}/tcp'
+    - '{{ ha_galera_backend_port }}/tcp'

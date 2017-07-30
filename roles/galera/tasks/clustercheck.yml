@@ -1,0 +1,47 @@
+---
+
+- name: installing xinetd
+  yum:
+    name: xinetd
+    state: present
+
+- name: copying clustercheck xinetd config
+  copy:
+    src: 'mysqlchk'
+    dest: '/etc/xinetd.d/'
+    owner: root
+    group: root
+    mode: 0600
+
+- name: modifying /etc/services
+  lineinfile:
+    path: '/etc/services'
+    regexp: '^wap-wsp.*9200/t.*'
+    line: '# wap-wsp  9200/tcp\n# wap-wsp  9200/udp'
+
+  lineinfile:
+    path: '/etc/services'
+    regexp: '^wap-wsp.*9200/u.*'
+    line: 'mysqlchk           9200/tcp            # mysqlchk'
+
+- name: copying clustercheck script
+  copy:
+    src: 'clustercheck'
+    dest: '/usr/bin/'
+    owner: root
+    group: root
+    mode: 0755
+
+- name: starting and enabling xinetd
+  service:
+    name: xinetd
+    state: started
+    enabled: yes
+
+- name: creating clustercheck user
+  mysql_user:
+    name: 'clustercheckuser'
+    password: 'clustercheckpassword!'
+    priv: "*.*:PROCESS,GRANT"
+    state: present
+  run_once: True

@@ -1,9 +1,31 @@
 ---
 # defaults file for haproxy
-enable_ha_stats: true
+enable_ha_stats: True
 ha_stats_user: 'kryptik'
 ha_stats_password: 'Password!'
 ha_stats_bind_port: 8080
 
-ha_front_bind_addr: '*'
-ha_front_bind_port: 80
+# Configuration options for HAProxy when being configured for webservers
+ha_webserver_front_bind_addr: '*'
+ha_webserver_front_bind_port: 80
+ha_webserver_backend_port: 80
+
+# Optionally bind to port 443 also
+ha_webserver_ssl: True
+ha_webserver_ssl_front_port: 443
+ha_webserver_ssl_cert_path: '/etc/haproxy/certs/cert.pem'
+
+# Group name of the webservers in your inventory
+ha_webserver_inventory_group: 'webservers'
+
+#
+# Configuration options for HAProxy when being configured for Galera cluster
+#
+# Binding frontend to the hosts internal ip
+ha_galera_frontend_addr: '{{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+ha_galera_frontend_port: 3030
+ha_galera_backend_port: 3306
+ha_galera_check_port: 9200
+
+# Group name of the galera hosts in your inventory
+ha_galera_inventory_group: 'galera_nodes'

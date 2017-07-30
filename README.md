@@ -7,13 +7,15 @@ All of the roles are designed for CentOS / RHEL 7 hosts.
 - [x] IPA-server
 - [x] IPA-client
 - [x] HAProxy for Nginx
-- [ ] HAProxy for Galera
+- [x] HAProxy for Galera
 - [x] MariaDB Galera Cluster
 - [x] Nginx
 - [x] PHP-7
 - [x] Dokuwiki
+- [ ] GlusterFS
 - [ ] NFS Share
 - [ ] ELK Stack
 - [ ] NodeJS
 - [ ] Redis
+- [ ] GitLab
 - [ ] Proxmox & Kickstarter

@@ -1,0 +1,26 @@
+---
+
+- name: open haproxy firewall ports for webserver
+  firewalld:
+    port: '{{ item }}'
+    permanent: True
+    state: enabled
+    immediate: yes
+  with_items:
+    - '{{ ha_nginx_front_bind_port }}/tcp'
+    - '{{ ha_webserver_backend_port }}/tcp'
+
+- name: open haproxy firewall ports for ssl
+  firewalld:
+    port: '{{ ha_nginx_ssl_front_port }}/tcp'
+    permanent: True
+    state: enabled
+    imediate: yes
+  when: ha_webserver_ssl
+
+- name: creating webserver haproxy configuration file
+  template:
+    src: webserver.haproxy.cfg.j2
+    dest: '/etc/haproxy/haproxy.cfg'
+    mode: 0644
+  notify: restart haproxy
