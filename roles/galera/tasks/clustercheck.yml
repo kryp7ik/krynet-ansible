@@ -19,7 +19,7 @@
     regexp: '^wap-wsp.*9200/t.*'
     line: '# wap-wsp  9200/tcp\n# wap-wsp  9200/udp'
 
-  lineinfile:
+- lineinfile:
     path: '/etc/services'
     regexp: '^wap-wsp.*9200/u.*'
     line: 'mysqlchk           9200/tcp            # mysqlchk'

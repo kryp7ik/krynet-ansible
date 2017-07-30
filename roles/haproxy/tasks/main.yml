@@ -1,9 +1,13 @@
 ---
 # tasks file for haproxy
-- name: install haproxy
+- name: install haproxy and selinux packages
   yum:
-    name: haproxy
+    name: {{ item }}
     state: installed
+  with_items:
+    - 'haproxy'
+    - 'libselinux-python'
+    - 'libsemanage-python'
 
 - include: nginx.yml
   when: hap_role == 'webserver'
@@ -13,11 +17,17 @@
 
 - name: open firewall for haproxy stats
   firewalld:
-    port: '{{ ha_stats_bind_port }}'
+    port: '{{ ha_stats_bind_port }}/tcp'
     permanent: true
     state: enabled
     immediate: yes
   when: enable_ha_stats
+
+- name: set seboolean haproxy_connect_any
+  seboolean:
+    name: haproxy_connect_any
+    state: yes
+    persistent: yes
 
 - name: enable haproxy to start on boot
   service:

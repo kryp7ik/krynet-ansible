@@ -63,8 +63,8 @@ galera02.krynet.com
 galera03.krynet.com
     
 [lb]
-web-haproxy.krynet.com hap_role:'webserver'
-galera-haproxy.krynet.com hap_role:'galera'
+web-haproxy.krynet.com hap_role='webserver'
+galera-haproxy.krynet.com hap_role='galera'
 ```
 Playbook Example
 

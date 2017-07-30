@@ -61,7 +61,6 @@ listen haproxy3-monitoring *:{{ ha_stats_bind_port }}
     stats realm Haproxy\ Statistics
     stats auth {{ ha_stats_user }}:{{ ha_stats_password }}
     stats admin if TRUE
-    default_backend app
 {% endif %}
 
 #---------------------------------------------------------------------
