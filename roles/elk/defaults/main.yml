@@ -10,4 +10,5 @@ logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'
 kibana_configure_nginx: True
 kibana_nginx_listen_port: 80
 kibana_nginx_server_name: '{{ inventory_hostname }}'
+kibana_nginx_user: 'elkadmin'
 kibana_nginx_htpasswd_file: '/etc/nginx/htpasswd.users'

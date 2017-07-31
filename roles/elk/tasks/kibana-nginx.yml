@@ -1,0 +1,31 @@
+---
+
+- name: kibana | installing python-passlib
+  yum:
+    name: python-passlib
+    state: installed
+
+- name: kibana | creating nginx password file
+  htpasswd:
+    path: '{{ kibana_nginx_htpasswd_file }}'
+    name: '{{ kibana_nginx_user }}'
+    password: '{{ kibana_nginx_password }}'
+    owner: root
+    group: nginx
+    mode: 0640
+
+- name: kibana | creating nginx vhost file
+  template:
+    src: 'kibana-nginx.conf'
+    dest: "/etc/nginx/sites-available/{{ kibana_nginx_server_name }}.conf"
+
+- name: kibana | enabling nginx vhost
+  file:
+    path: "/etc/nginx/sites-enabled/{{ kibana_nginx_server_name }}.conf"
+    src: "/etc/nginx/sites-available/{{ kibana_nginx_server_name }}.conf"
+    state: link
+
+- name: kibana | restarting nginx
+  service:
+    name: nginx
+    state: restarted
