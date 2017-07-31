@@ -1,0 +1,27 @@
+---
+
+- name: elastic | adding elastic search repository
+  copy:
+    src: 'elasticsearch.repo'
+    dest: '/etc/yum.repos.d/elasticsearch.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: elastic | installing elastic search packages
+  yum:
+    name: 'elasticsearch'
+    state: present
+
+- name: elastic | starting and enabling elasticsearch service
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+
+- name: elastic | opening firewall port
+  firewalld:
+    port: '9200/tcp'
+    permanent: true
+    state: enabled
+    immediate: yes

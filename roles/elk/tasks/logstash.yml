@@ -1,0 +1,63 @@
+---
+
+- name: logstash | adding logstash repository
+  copy:
+    src: 'logstash.repo'
+    dest: '/etc/yum.repos.d/logstash.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: logstash | installing logstash package
+  yum:
+    name: logstash
+    state: present
+
+- name: logstash | adding subjectAltName to openssl.cnf
+  lineinfile:
+    path: '/etc/pki/tls/openssl.cnf'
+    insertafter: '\[ v3_ca \]'
+    line: 'subjectAltName = IP: {{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+    state: present
+
+- name: logstash | generating self-signed certificate
+  command: >
+    openssl req -config /etc/pki/tls/openssl.cnf
+    -x509
+    -days 3650
+    -batch
+    -nodes
+    -newkey rsa:2048
+    -keyout {{ logstash_ssl_key }}
+    -out {{ logstash_ssl_crt }}
+
+- name: logstash | creating input.conf
+  template:
+    src: 'logstash.input.conf'
+    dest: '/etc/logstash/conf.d/input.conf'
+    mode: 0644
+
+- name: logstash | creating output.conf
+  template:
+    src: 'logstash.output.conf'
+    dest: '/etc/logstash/conf.d/output.conf'
+    mode: 0644
+
+- name: logstash | creating filter.conf
+  template:
+    src: 'logstash.filter.conf'
+    dest: '/etc/logstash/conf.d/filter.conf'
+    mode: 0644
+
+- name: logstash | starting and enabling logstash service
+  service:
+    name: logstash
+    state: started
+    enabled: yes
+
+- name: logstash | opening firewall port
+  firewalld:
+    port: '5044/tcp'
+    permanent: true
+    state: enabled
+    immediate: yes

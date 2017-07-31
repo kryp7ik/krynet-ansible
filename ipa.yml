@@ -10,4 +10,5 @@
     - name: ipa_dm_pass
       prompt: 'Please type in the admin directory manager password'
   roles:
+    - { role: base, tags: 'base' }
     - { role: ipa-server, tags: 'ipa-server' }

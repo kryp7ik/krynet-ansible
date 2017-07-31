@@ -1,0 +1,13 @@
+---
+
+# hostname of the elk server
+elk_server: 'elk.krynet.com'
+
+# path of the ssl cert on the remote elk server
+elk_ssl_cert_remote_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+
+# path to place the ssl cert on the local host
+elk_ssl_cert_local_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+
+# filebeat configuration option of where to retrieve log files
+filebeat_log_path: '/var/log/*.log'

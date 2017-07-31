@@ -1,0 +1,7 @@
+---
+
+java_package: 'java-1.8.0-openjdk.x86_64'
+
+# Logstash
+logstash_ssl_key: '/etc/pki/tls/private/logstash-forwarder.key'
+logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'

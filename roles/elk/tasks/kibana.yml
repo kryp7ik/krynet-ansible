@@ -1,0 +1,27 @@
+---
+
+- name: kibana | adding kibana repository
+  copy:
+    src: 'logstash.repo'
+    dest: '/etc/yum.repos.d/kibana.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: kibana | installing kibana package
+  yum:
+    name: kibana
+    state: present
+
+- name: kibana | starting and enabling kibana service
+  service:
+    name: kibana
+    state: started
+    enabled: yes
+
+- name: kibana | open firewall port
+  firewalld:
+    port: '5601/tcp'
+    state: enabled
+    permanent: True
+    immediate: yes

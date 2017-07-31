@@ -1,12 +1,6 @@
 ---
-- name: install epel repo
-  yum:
-    name: "epel-release"
-    update_cache: yes
-    state: present
-  tags: ['install']
 
-- name: install selinux python packages
+- name: install base packages on all hosts
   yum:
     name: "{{ item }}"
     update_cache: yes
@@ -15,10 +9,11 @@
     - 'policycoreutils-python'
     - 'libselinux-python'
     - 'libsemanage-python'
+    - 'rsync'
   tags: ['install']
 
 - name: upgrade all packages
   yum:
     name: '*'
     state: latest
-  tags: ['install']
+  tags: ['install', 'update']

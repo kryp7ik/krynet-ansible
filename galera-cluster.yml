@@ -9,4 +9,5 @@
       private: yes
 
   roles:
+    - { role: base, tags: 'base' }
     - { role: galera, tags: 'galera' }

@@ -1,0 +1,17 @@
+---
+
+- name: installing java
+  yum:
+    name: {{ java_package }}
+    state: installed
+
+- name: import elastic GPG-KEY
+  rpm_key:
+    key: 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
+    state: present
+
+- include: elastic.yml
+
+- include: logstash.yml
+
+- include: kibana.yml

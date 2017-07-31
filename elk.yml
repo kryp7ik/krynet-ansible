@@ -1,0 +1,16 @@
+---
+- hosts: elk
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: base, tags: 'base' }
+    - { role: elk, tags: 'elk' }
+
+- hosts: elk_beats
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: base, tags: 'base' }
+    - { role: filebeat, tags: 'filebeat' }
