@@ -5,6 +5,8 @@
   become_method: sudo
   roles:
     - { role: base, tags: 'base' }
+    - { role: epel, tags: 'epel' }
+    - { role: nginx, tags: 'nginx' }
     - { role: elk, tags: 'elk' }
 
 - hosts: elk_beats

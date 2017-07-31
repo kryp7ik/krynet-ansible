@@ -2,7 +2,7 @@
 
 - name: installing java
   yum:
-    name: {{ java_package }}
+    name: '{{ java_package }}'
     state: installed
 
 - name: import elastic GPG-KEY

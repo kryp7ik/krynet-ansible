@@ -6,7 +6,8 @@ This role will install Elastic Stack (ELK / Elastic Search, Logstash, Kibana) on
 Requirements
 ------------
 
-None
+Optionally have Nginx installed and Kibana will automatically configure the reverse proxy if the kibana_configure_nginx 
+variable is True.
 
 Role Variables
 --------------
@@ -16,6 +17,12 @@ Role Variables
     # Logstash
     logstash_ssl_key: '/etc/pki/tls/private/logstash-forwarder.key'
     logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'
+    
+    # Kibana
+    kibana_configure_nginx: True
+    kibana_nginx_listen_port: 80
+    kibana_nginx_server_name: '{{ inventory_hostname }}'
+    kibana_nginx_htpasswd_file: '/etc/nginx/htpasswd.users'
 
 Dependencies
 ------------

@@ -2,9 +2,9 @@
 
 - name: filebeat | fetching ssl certificate from elk host
   synchronize:
-    src: {{ elk_ssl_cert_remote_path }}
-    dest: {{ elk_ssl_cert_local_path }}
-  delegate_to: {{ elk_server }}
+    src: '{{ elk_ssl_cert_remote_path }}'
+    dest: '{{ elk_ssl_cert_local_path }}'
+  delegate_to: '{{ elk_server }}'
 
 - name: filebeat | import elastic GPG-KEY
   rpm_key:

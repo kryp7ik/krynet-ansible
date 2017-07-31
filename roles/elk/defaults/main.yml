@@ -5,3 +5,9 @@ java_package: 'java-1.8.0-openjdk.x86_64'
 # Logstash
 logstash_ssl_key: '/etc/pki/tls/private/logstash-forwarder.key'
 logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'
+
+# Kibana
+kibana_configure_nginx: True
+kibana_nginx_listen_port: 80
+kibana_nginx_server_name: '{{ inventory_hostname }}'
+kibana_nginx_htpasswd_file: '/etc/nginx/htpasswd.users'
