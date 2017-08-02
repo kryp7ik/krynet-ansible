@@ -20,6 +20,11 @@
     line: 'subjectAltName = IP: {{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
     state: present
 
+- name: logstash | checking if ssl certificate exists
+  stat:
+    path: '{{ logstash_ssl_crt }}'
+  register: cert_stats
+
 - name: logstash | generating self-signed certificate
   command: >
     openssl req -config /etc/pki/tls/openssl.cnf
@@ -30,30 +35,39 @@
     -newkey rsa:2048
     -keyout {{ logstash_ssl_key }}
     -out {{ logstash_ssl_crt }}
+  when: cert_stats.stat.exists == False
+
+# Temporary work around until I can get the synchronize module to work
+# Fetching cert to ansible host then when installing filebeat on other servers we will simply use the copy module
+- name: logstash | fetching certificate to ansible host
+  fetch:
+    src: '{{ logstash_ssl_crt }}'
+    dest: '/tmp/logstash-forwarder.crt'
+    flat: yes
 
 - name: logstash | creating input.conf
   template:
     src: 'logstash.input.conf'
     dest: '/etc/logstash/conf.d/input.conf'
-    mode: 0644
+    owner: root
+    group: logstash
+    mode: 0640
 
 - name: logstash | creating output.conf
   template:
     src: 'logstash.output.conf'
     dest: '/etc/logstash/conf.d/output.conf'
-    mode: 0644
+    owner: root
+    group: logstash
+    mode: 0640
 
 - name: logstash | creating filter.conf
   template:
     src: 'logstash.filter.conf'
     dest: '/etc/logstash/conf.d/filter.conf'
-    mode: 0644
-
-- name: logstash | starting and enabling logstash service
-  service:
-    name: logstash
-    state: started
-    enabled: yes
+    owner: root
+    group: logstash
+    mode: 0640
 
 - name: logstash | opening firewall port
   firewalld:
@@ -61,3 +75,12 @@
     permanent: true
     state: enabled
     immediate: yes
+
+- name: logstash | installing x-pack
+  command: /usr/share/logstash/bin/logstash-plugin install x-pack
+
+- name: logstash | starting and enabling logstash service
+  service:
+    name: logstash
+    state: started
+    enabled: yes

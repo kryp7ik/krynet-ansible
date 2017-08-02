@@ -15,8 +15,9 @@ filebeat.prospectors:
 - input_type: log
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
-    - {{ filebeat_log_path }}
-    #- c:\programdata\elasticsearch\logs\*
+    {% for path in filebeat_log_paths %}
+    - {{ path }}
+    {% endfor %}
 
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
@@ -69,9 +70,9 @@ filebeat.prospectors:
 # Multiple outputs may be used.
 #-------------------------- Elasticsearch output ------------------------------
 
-output.elasticsearch:
+#output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["{{ elk_server }}:9200"]
+  # hosts: ["{{ elk_server }}:9200"]
   # Optional protocol and basic auth credentials.
   #protocol: "https"
   #username: "elastic"

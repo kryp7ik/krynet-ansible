@@ -5,6 +5,7 @@
     name: python-passlib
     state: installed
 
+# @todo get ssl cert from ipa and configure nginx to use SSL only rather than using password file
 - name: kibana | creating nginx password file
   htpasswd:
     path: '{{ kibana_nginx_htpasswd_file }}'

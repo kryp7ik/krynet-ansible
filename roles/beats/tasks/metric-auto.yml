@@ -1,0 +1,89 @@
+---
+
+- name: checking for apache
+  command: 'rpm -q httpd'
+  register: apache_check
+- set_fact: mb_modules.mb_apache.enabled=True
+  when: apache_check.stdout.find('is not installed') != -1
+
+
+- name: checking for nginx
+  command: 'rpm -q nginx'
+  register: nginx_check
+- set_fact: mb_modules.mb_nginx.enabled=True
+  when: nginx_check.stdout.find('is not installed') != -1
+
+
+- name: checking for haproxy
+  command: 'rpm -q haproxy'
+  register: haproxy_check
+- set_fact: mb_modules.mb_haproxy.enabled=True
+  when: haproxy_check.stdout.find('is not installed') != -1
+
+
+- name: checking for php-fpm
+  stat:
+    path: '/etc/php-fpm.conf'
+  register: php_check
+- set_fact: mb_modules.mb_php_fpm.enabled=True
+  when: php_check.stat.exists
+
+
+- name: checking for mysql
+  stat:
+    path: '/etc/my.cnf'
+  register: mysql_check
+- set_fact: mb_modules.mb_mysql.enabled=True
+  when: mysql_check.stat.exists
+
+
+- name: checking for redis
+  command: 'rpm -q redis'
+  register: redis_check
+- set_fact: mb_modules.mb_redis.enabled=True
+  when: redis_check.stdout.find('is not installed') != -1
+
+
+- name: checking for ceph
+  stat:
+    path: '/etc/systemd/system/ceph-osd.target'
+  register: ceph_check
+- set_fact: mb_modules.mb_ceph.enabled=True
+  when: ceph_check.stat.exists
+
+
+- name: checking for couchbase
+  command: 'rpm -q couchbase-server'
+  register: couchbase_check
+- set_fact: mb_modules.mb_couchbase.enabled=True
+  when: couchbase_check.stdout.find('is not installed') != -1
+
+
+- name: checking for docker
+  stat:
+    path: '/etc/sysconfig/docker'
+  register: docker_check
+- set_fact: mb_modules.mb_docker.enabled=True
+  when: docker_check.stat.exists
+
+
+- name: checking for mongod
+  stat:
+    path: '/etc/mongod.conf'
+  register: mongod_check
+- set_fact: mb_modules.mb_mongod.enabled=True
+  when: mongod_check.stat.exists
+
+
+- name: checking for postgresql
+  command: 'rpm -q postgresql-server'
+  register: postgresql_check
+- set_fact: mb_modules.mb_postgresql.enabled=True
+  when: postgresql_check.stdout.find('is not installed') != -1
+
+
+- name: checking for zookeeper
+  command: 'rpm -q zookeeper'
+  register: zookeeper_check
+- set_fact: mb_modules.mb_zoo_keeper.enabled=True
+  when: zookeeper_check.stdout.find('is not installed') != -1

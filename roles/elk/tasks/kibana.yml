@@ -13,11 +13,16 @@
     name: kibana
     state: present
 
+- include: kibana-nginx.yml
+  when: kibana_configure_nginx
+
+- name: kibana | installing x-pack
+  command: /usr/share/kibana/bin/kibana-plugin install x-pack --batch
+  args:
+    creates: /usr/share/kibana/plugins/x-pack/index.js
+
 - name: kibana | starting and enabling kibana service
   service:
     name: kibana
     state: started
     enabled: yes
-
-- include: kibana-nginx.yml
-  when: kibana_configure_nginx

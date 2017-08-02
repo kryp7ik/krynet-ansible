@@ -2,11 +2,51 @@
 
 java_package: 'java-1.8.0-openjdk.x86_64'
 
-# Logstash
+# ---------  Elastic Search ------------------------
+# enable x-pack machine learning
+xpack_ml_enabled: 'true'
+
+# enable x-pack monitoring
+xpack_monitoring: 'true'
+
+# enable x-pack security
+xpack_security_enabled: 'true'
+xpack_accept_default_password: 'false'
+
+# x-pack ldap settings
+# the bind dn and password.  These are only used to check users on the LDAP server
+xpack_ldap_bind_dn: "cn=directory manager"
+xpack_ldap_bind_password: 'changeme'
+
+# base DN to use when searching for users
+xpack_ldap_user_search_base_dn: "cn=users,cn=accounts,dc=ipa,dc=krynet,dc=com"
+xpack_ldap_user_search_attribute: 'uid'
+
+# base DN to use when searching for groups
+xpack_ldap_group_search_base_dn: "cn=groups,cn=accounts,dc=ipa,dc=krynet,dc=com"
+
+# Location of role_mapping.yml file.  This is the recommended default path from the installation
+xpack_ldap_role_mapping_file: "/etc/elasticsearch/x-pack/role_mapping.yml"
+xpack_ldap_unmapped_groups_as_roles: 'false'
+
+# Due to Elasticsearch's permissions there must be a link to your ca.crt in the elastic config dir
+# The default path to your ca.crt to which ansible will create a link from here to the xpack_ldap_ca_file path
+ca_file_location: '/etc/ipa/ca.crt'
+xpack_ldap_ca_file: '/etc/elasticsearch/x-pack/ca.crt'
+ldap_server_urls:
+  - 'ldaps://ipa.krynet.com:636'
+  - 'ldaps://iparep.krynet.com:636'
+
+# --------- Logstash -------------------------------
 logstash_ssl_key: '/etc/pki/tls/private/logstash-forwarder.key'
 logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'
 
-# Kibana
+# Credentials for logstash to use when connecting to elastic search
+# If LDAP is working correctly it can use any credentials from there with valid permissions
+elastic_auth_user: 'admin'
+elastic_auth_password: 'secretpass'
+
+# --------- Kibana ----------------------------------
 kibana_configure_nginx: True
 kibana_nginx_listen_port: 80
 kibana_nginx_server_name: '{{ inventory_hostname }}'

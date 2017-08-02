@@ -1,0 +1,23 @@
+---
+
+- name: metricbeat | installing metricbeat
+  yum:
+    name: metricbeat
+    state: installed
+
+- include: metric-auto.yml
+  when: service_auto_check
+
+- name: metricbeat | copying configuration file
+  template:
+    src: 'metricbeat.yml.j2'
+    dest: '/etc/metricbeat/metricbeat.yml'
+    mode: 0644
+  notify: restart filebeat
+
+- name: metricbeat | starting and enabling metricbeat service
+  service:
+    name: metricbeat
+    state: started
+    enabled: yes
+

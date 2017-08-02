@@ -1,0 +1,5 @@
+# x-pack role
+superuser:
+  - "cn=admins,{{ xpack_ldap_group_search_base_dn }}"
+kibana_user:
+  - "cn=ipausers,{{ xpack_ldap_group_search_base_dn }}"

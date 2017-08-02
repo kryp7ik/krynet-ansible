@@ -1,0 +1,173 @@
+---
+
+# hostname or IP of the elk server ( make sure this matches the bind address/hostname configured on elasticsearch and/or logstash )
+elk_server: 'elk.krynet.com'
+
+# path of the ssl cert on the remote elk server
+# Unused until I can get synchronize to work
+# elk_ssl_cert_remote_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+
+# path to place the ssl cert on the local host
+elk_ssl_cert_local_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+
+# --------------- FILEBEAT -------------------------------------------------
+install_filebeat: True
+# filebeat configuration option of where to retrieve log files
+filebeat_log_paths:
+  - '/var/log/*.log'
+  - '/var/log/messages'
+
+
+# --------------- METRICBEAT -------------------------------------------------
+install_metricbeat: True
+
+# Modules to enable
+# Ansible will automatically check each host to see if the packages that correspond to a module are installed and if so it will add them to the config file.
+# You can disable this feature by setting service_auto_check to false
+service_auto_check: True
+
+# These are the services that ansible will automatically detect and enable when using service_auto_check
+# If it discovers that the service is installed it will automatically set the enabled variable to True
+# If your not using service_auto_check you can set the 'enabled' variable(s) that correspond to the modules you want enabled to True
+mb_modules:
+  mb_system:
+    enabled: True
+    config: |
+      - module: system
+        metricsets:
+          - cpu
+          - filesystem
+          - fsstat
+          - memory
+          - network
+          - process
+          - socket
+        enabled: true
+        period: 10s
+        processes: ['.*']
+  mb_apache:
+    enabled: False
+    config: |
+      - module: apache
+        metricsets: ["status"]
+        enabled: true
+        period: 10s
+        hosts: ["http://127.0.0.1"]
+  mb_ceph:
+    enabled: False
+    config: |
+      - module: ceph
+        metricsets: ["cluster_disk", "cluster_health", "monitor_health", "pool_disk"]
+        enabled: true
+        period: 10s
+        hosts: ["localhost:5000"]
+  mb_couchbase:
+    enabled: False
+    config: |
+      - module: couchbase
+        metricsets: ["cluster", "node", "bucket"]
+        enabled: true
+        period: 10s
+        hosts: ["localhost:8091"]
+  mb_docker:
+    enabled: False
+    config: |
+      - module: docker
+        metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
+        hosts: ["unix:///var/run/docker.sock"]
+        enabled: true
+        period: 10s
+        ssl:
+          certificate_authority: "/etc/pki/root/ca.pem"
+          certificate: "/etc/pki/client/cert.pem"
+          key: "/etc/pki/client/cert.key"
+  mb_haproxy:
+    enabled: False
+    config: |
+      - module: haproxy
+        metricsets: ["info", "stat"]
+        enabled: true
+        period: 10s
+        hosts: ["tcp://127.0.0.1:8080"]
+  mb_jolokia:
+    enabled: False
+    config: |
+      - module: jolokia
+        metricsets: ["jmx"]
+        enabled: true
+        period: 10s
+        hosts: ["localhost"]
+        namespace: "metrics"
+        path: "/jolokia/?ignoreErrors=true&canonicalNaming=false"
+        jmx.mapping:
+        jmx.application:
+        jmx.instance:
+  mb_mongodb:
+    enabled: False
+    config: |
+      - module: mongodb
+        metricsets: ["status"]
+        hosts: ["localhost:27017"]
+        username: root
+        password: test
+  mb_mysql:
+    enabled: False
+    config: |
+      - module: mysql
+        metricsets: ["status"]
+        enabled: true
+        period: 10s
+        hosts: ["root:secret@tcp(127.0.0.1:3306)/"]
+  mb_nginx:
+    enabled: False
+    config: |
+      - module: nginx
+        metricsets: ["stubstatus"]
+        enabled: true
+        period: 10s
+        hosts: ["http://127.0.0.1"]
+  mb_php_fpm:
+    enabled: False
+    config: |
+      - module: php_fpm
+        metricsets: ["pool"]
+        enabled: true
+        period: 10s
+        status_path: "/status"
+        hosts: ["localhost:8080"]
+  mb_postgresql:
+    enabled: False
+    config: |
+      - module: postgresql
+        metricsets: ["database", "bgwriter", "activity"]
+        enabled: true
+        period: 10s
+        hosts: ["postgres://localhost:5432"]
+        username: user
+        password: pass
+  mb_prometheus:
+    enabled: False
+    config: |
+      - module: prometheus
+        metricsets: ["stats"]
+        enabled: true
+        period: 10s
+        hosts: ["localhost:9090"]
+        metrics_path: /metrics
+        namespace: example
+  mb_redis:
+    enabled: False
+    config: |
+      - module: redis
+        metricsets: ["info", "keyspace"]
+        enabled: true
+        period: 10s
+        hosts: ["127.0.0.1:6379"]
+  mb_zoo_keeper:
+    enabled: False
+    config: |
+      - module: zookeeper
+        metricsets: ["mntr"]
+        enabled: true
+        period: 10s
+        hosts: ["localhost:2181"]
