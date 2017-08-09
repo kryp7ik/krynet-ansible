@@ -25,9 +25,12 @@
 
 - include: filebeat.yml
   when: install_filebeat
+  tags: ['filebeat']
 
 - include: metricbeat.yml
   when: install_metricbeat
+  tags: ['metricbeat']
 
 - include: packetbeat.yml
   when: install_packetbeat
+  tags: ['packetbeat']

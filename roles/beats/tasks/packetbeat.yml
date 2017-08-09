@@ -17,4 +17,4 @@
   service:
     name: packetbeat
     state: started
-    enabled: yes:q
+    enabled: yes

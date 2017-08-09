@@ -63,17 +63,17 @@ install_packetbeat: False
 packetbeat_interfaces: 'any'
 
 # Ports packetbeat should listen to
-packetbeat_http_ports: [80, 443, 8080, 8000, 5000, 8002]
-packetbeat_amqp_ports: [5672]
-packetbeat_cassandra_ports: [9042]
-packetbeat_dns_ports: [53]
-packetbeat_memcache_ports: [11211]
-packetbeat_mysql_ports: [3306]
-packetbeat_pgsql_ports: [5432]
-packetbeat_redis_ports: [6379]
-packetbeat_thrift_ports: [9090]
-packetbeat_mongodb_ports: [27017]
-packetbeat_nfs_ports: [2049]
+packetbeat_http_ports: '[80, 443, 8080, 8000, 5000, 8002]'
+packetbeat_amqp_ports: '[5672]'
+packetbeat_cassandra_ports: '[9042]'
+packetbeat_dns_ports: '[53]'
+packetbeat_memcache_ports: '[11211]'
+packetbeat_mysql_ports: '[3306]'
+packetbeat_pgsql_ports: '[5432]'
+packetbeat_redis_ports: '[6379]'
+packetbeat_thrift_ports: '[9090]'
+packetbeat_mongodb_ports: '[27017]'
+packetbeat_nfs_ports: '[2049]'
 
 # --------------- METRICBEAT -------------------------------------------------
 install_metricbeat: True

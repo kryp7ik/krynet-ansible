@@ -23,7 +23,7 @@
 
 - name: checking for mysql
   stat:
-    path: '/etc/my.cnf'
+    path: '/usr/bin/mysql'
   register: mysql_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_mysql': {'enabled': True }}, recursive=True) }}"

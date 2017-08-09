@@ -30,6 +30,11 @@
   args:
     creates: /usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties
 
+- name: elastic | installing ingest-user-agent
+  command: /usr/share/elasticsearch/bin/elasticsearch-plugin install ingest-user-agent --batch
+  args:
+    creates: /usr/share/elasticsearch/plugins/ingest-user-agent/plugin-descriptor.properties
+
 - name: elastic | creating certs directory for the links
   file:
     path: '/etc/elasticsearch/certs'
