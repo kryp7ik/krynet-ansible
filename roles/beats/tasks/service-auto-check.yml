@@ -6,8 +6,8 @@
   ignore_errors: yes
   register: apache_check
 - set_fact:
-    mb_modules.mb_apache.enabled: True
-    filebeat_modules.apache.enabled: True
+    mb_modules: "{{ mb_modules | combine({ 'mb_apache': {'enabled': True }}, recursive=True) }}"
+    filebeat_modules: "{{ filebeat_modules | combine({ 'apache': {'enabled': True }}, recursive=True) }}"
   when: apache_check.stdout.find('is not installed') != -1
 
 
@@ -16,8 +16,8 @@
   ignore_errors: yes
   register: nginx_check
 - set_fact:
-    mb_modules.mb_nginx.enabled: True
-    filebeat_modules.nginx.enabled: True
+    mb_modules: "{{ mb_modules | combine({ 'mb_nginx': {'enabled': True }}, recursive=True) }}"
+    filebeat_modules: "{{ filebeat_modules | combine({ 'nginx': {'enabled': True }}, recursive=True) }}"
   when: nginx_check.stdout.find('is not installed') != -1
 
 
@@ -26,8 +26,8 @@
     path: '/etc/my.cnf'
   register: mysql_check
 - set_fact:
-    mb_modules.mb_mysql.enabled: True
-    filebeat_modules.mysql.enabled: True
+    mb_modules: "{{ mb_modules | combine({ 'mb_mysql': {'enabled': True }}, recursive=True) }}"
+    filebeat_modules: "{{ filebeat_modules | combine({ 'mysql': {'enabled': True }}, recursive=True) }}"
   when: mysql_check.stat.exists
 
 
@@ -35,7 +35,8 @@
   stat:
     path: '/etc/audit/auditd.conf'
   register: auditd_check
-- set_fact: filebeat_modules.auditd.enabled=True
+- set_fact:
+    filebeat_modules: "{{ filebeat_modules | combine({ 'auditd': {'enabled': True }}, recursive=True) }}"
   when: auditd_check.stat.exists
 
 
@@ -45,7 +46,8 @@
   command: 'rpm -q haproxy'
   ignore_errors: yes
   register: haproxy_check
-- set_fact: mb_modules.mb_haproxy.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_haproxy': {'enabled': True }}, recursive=True) }}"
   when: haproxy_check.stdout.find('is not installed') != -1
 
 
@@ -53,7 +55,8 @@
   stat:
     path: '/etc/php-fpm.conf'
   register: php_check
-- set_fact: mb_modules.mb_php_fpm.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_php_fpm': {'enabled': True }}, recursive=True) }}"
   when: php_check.stat.exists
 
 
@@ -61,7 +64,8 @@
   command: 'rpm -q redis'
   ignore_errors: yes
   register: redis_check
-- set_fact: mb_modules.mb_redis.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_redis': {'enabled': True }}, recursive=True) }}"
   when: redis_check.stdout.find('is not installed') != -1
 
 
@@ -69,7 +73,8 @@
   stat:
     path: '/etc/systemd/system/ceph-osd.target'
   register: ceph_check
-- set_fact: mb_modules.mb_ceph.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_ceph': {'enabled': True }}, recursive=True) }}"
   when: ceph_check.stat.exists
 
 
@@ -77,7 +82,8 @@
   command: 'rpm -q couchbase-server'
   ignore_errors: yes
   register: couchbase_check
-- set_fact: mb_modules.mb_couchbase.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_couchbase': {'enabled': True }}, recursive=True) }}"
   when: couchbase_check.stdout.find('is not installed') != -1
 
 
@@ -85,7 +91,8 @@
   stat:
     path: '/etc/sysconfig/docker'
   register: docker_check
-- set_fact: mb_modules.mb_docker.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_docker': {'enabled': True }}, recursive=True) }}"
   when: docker_check.stat.exists
 
 
@@ -93,7 +100,8 @@
   stat:
     path: '/etc/mongod.conf'
   register: mongod_check
-- set_fact: mb_modules.mb_mongod.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_mongod': {'enabled': True }}, recursive=True) }}"
   when: mongod_check.stat.exists
 
 
@@ -101,7 +109,8 @@
   command: 'rpm -q postgresql-server'
   ignore_errors: yes
   register: postgresql_check
-- set_fact: mb_modules.mb_postgresql.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_postgresql': {'enabled': True }}, recursive=True) }}"
   when: postgresql_check.stdout.find('is not installed') != -1
 
 
@@ -109,5 +118,6 @@
   command: 'rpm -q zookeeper'
   ignore_errors: yes
   register: zookeeper_check
-- set_fact: mb_modules.mb_zoo_keeper.enabled=True
+- set_fact:
+    mb_modules: "{{ mb_modules | combine({ 'mb_zoo_keeper': {'enabled': True }}, recursive=True) }}"
   when: zookeeper_check.stdout.find('is not installed') != -1
