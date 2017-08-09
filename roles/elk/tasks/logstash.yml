@@ -13,61 +13,33 @@
     name: logstash
     state: present
 
-- name: logstash | adding subjectAltName to openssl.cnf
-  lineinfile:
-    path: '/etc/pki/tls/openssl.cnf'
-    insertafter: '\[ v3_ca \]'
-    line: 'subjectAltName = IP: {{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
-    state: present
-
-- name: logstash | checking if ssl certificate exists
-  stat:
-    path: '{{ logstash_ssl_crt }}'
-  register: cert_stats
-
-- name: logstash | generating self-signed certificate
-  command: >
-    openssl req -config /etc/pki/tls/openssl.cnf
-    -x509
-    -days 3650
-    -batch
-    -nodes
-    -newkey rsa:2048
-    -keyout {{ logstash_ssl_key }}
-    -out {{ logstash_ssl_crt }}
-  when: cert_stats.stat.exists == False
-
-# Temporary work around until I can get the synchronize module to work
-# Fetching cert to ansible host then when installing filebeat on other servers we will simply use the copy module
-- name: logstash | fetching certificate to ansible host
-  fetch:
-    src: '{{ logstash_ssl_crt }}'
-    dest: '/tmp/logstash-forwarder.crt'
-    flat: yes
-
 - name: logstash | creating input.conf
   template:
-    src: 'logstash.input.conf'
+    src: 'logstash.input.conf.j2'
     dest: '/etc/logstash/conf.d/input.conf'
     owner: root
     group: logstash
     mode: 0640
+  tags: ['configure']
 
 - name: logstash | creating output.conf
   template:
-    src: 'logstash.output.conf'
+    src: 'logstash.output.conf.j2'
     dest: '/etc/logstash/conf.d/output.conf'
     owner: root
     group: logstash
     mode: 0640
+  tags: ['configure']
 
 - name: logstash | creating filter.conf
   template:
-    src: 'logstash.filter.conf'
+    src: 'logstash.filter.conf.j2'
     dest: '/etc/logstash/conf.d/filter.conf'
     owner: root
     group: logstash
     mode: 0640
+  tags: ['configure']
+  notify: restart logstash
 
 - name: logstash | opening firewall port
   firewalld:
@@ -76,8 +48,22 @@
     state: enabled
     immediate: yes
 
+- name: logstash | set ACL for logstash group on SSL files
+  acl:
+    path: '{{ item }}'
+    entity: logstash
+    etype: group
+    permissions: r
+    state: present
+  with_items:
+    - '{{ ssl_key_path }}'
+    - '{{ ssl_cert_path }}'
+    - '{{ ssl_ca_path }}'
+
 - name: logstash | installing x-pack
-  command: /usr/share/logstash/bin/logstash-plugin install x-pack
+  logstash_plugin:
+    name: x-pack
+    state: present
 
 - name: logstash | starting and enabling logstash service
   service:

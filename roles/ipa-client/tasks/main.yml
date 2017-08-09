@@ -23,4 +23,5 @@
     --ssh-trust-dns
     --mkhomedir
     --enable-dns-updates
+    --request-cert
   when: krb5_conf.stdout.find('# EXAMPLE.COM') != -1

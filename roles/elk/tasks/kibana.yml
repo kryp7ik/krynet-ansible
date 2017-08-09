@@ -15,11 +15,34 @@
 
 - include: kibana-nginx.yml
   when: kibana_configure_nginx
+  tags: ['configure']
 
 - name: kibana | installing x-pack
   command: /usr/share/kibana/bin/kibana-plugin install x-pack --batch
   args:
     creates: /usr/share/kibana/plugins/x-pack/index.js
+
+- name: kibana | set ACL for kibana group on SSL files
+  acl:
+    path: '{{ item }}'
+    entity: kibana
+    etype: group
+    permissions: r
+    state: present
+  with_items:
+    - '{{ ssl_key_path }}'
+    - '{{ ssl_cert_path }}'
+    - '{{ ssl_ca_path }}'
+
+- name: kibana | creating kibana.yml config file
+  template:
+    src: 'kibana.yml.j2'
+    dest: '/etc/kibana/kibana.yml'
+    owner: root
+    group: kibana
+    mode: 0640
+  tags: ['configure']
+  notify: restart kibana
 
 - name: kibana | starting and enabling kibana service
   service:

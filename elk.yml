@@ -3,21 +3,8 @@
   remote_user: kryptik
   become: yes
   become_method: sudo
-  vars_prompt:
-    - name: kibana_nginx_password
-      prompt: 'Set password for Kibana'
-      private: yes
   roles:
     - { role: base, tags: 'base' }
     - { role: epel, tags: 'epel' }
     - { role: nginx, tags: 'nginx' }
     - { role: elk, tags: 'elk' }
-
-
-- hosts: elk_beats
-  remote_user: kryptik
-  become: yes
-  become_method: sudo
-  roles:
-    - { role: base, tags: 'base' }
-    - { role: filebeat, tags: 'filebeat' }

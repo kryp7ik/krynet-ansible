@@ -3,28 +3,79 @@
 # hostname or IP of the elk server ( make sure this matches the bind address/hostname configured on elasticsearch and/or logstash )
 elk_server: 'elk.krynet.com'
 
-# path of the ssl cert on the remote elk server
-# Unused until I can get synchronize to work
-# elk_ssl_cert_remote_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+# Specify which output methods you would like to use
+beats_output_elastic: True
+beats_output_logstash: False
 
-# path to place the ssl cert on the local host
-elk_ssl_cert_local_path: '/etc/pki/tls/certs/logstash-forwarder.crt'
+# Output ssl configuration
+# automatically retrieve certificate and key from ipa server
+ipa_getcert: True
+beats_ssl_ca: '/etc/ipa/ca.crt'
+beats_ssl_cert: '/etc/pki/tls/certs/{{ inventory_hostname }}.pem'
+beats_ssl_key: '/etc/pki/tls/private/{{ inventory_hostname }}.key'
 
-# --------------- FILEBEAT -------------------------------------------------
-install_filebeat: True
-# filebeat configuration option of where to retrieve log files
-filebeat_log_paths:
-  - '/var/log/*.log'
-  - '/var/log/messages'
+# Elastic output settings
+beats_elastic_protocol: 'https'
+beats_elastic_username: 'elastic'
+beats_elastic_password: 'changeme'
 
+# Logstash output settings
+beats_logstash_ssl: True
 
-# --------------- METRICBEAT -------------------------------------------------
-install_metricbeat: True
-
-# Modules to enable
 # Ansible will automatically check each host to see if the packages that correspond to a module are installed and if so it will add them to the config file.
 # You can disable this feature by setting service_auto_check to false
 service_auto_check: True
+
+# --------------- FILEBEAT -------------------------------------------------
+install_filebeat: True
+
+# filebeat configuration option of where to retrieve log files
+# NOTE: you may not want to include log files that would be retrieved by one of the filebeat modules
+filebeat_log_paths:
+  - '/var/log/*.log'
+
+# Filebeat modules.  If you're using the service_auto_check ansible will automatically enable the relevant modules
+filebeat_modules:
+  system:
+    enabled: True
+    config: '- module: system'
+  apache:
+    enabled: False
+    config: '- module: apache2'
+  auditd:
+    enabled: False
+    config: '- module: auditd'
+  mysql:
+    enabled: False
+    config: '- module: mysql'
+  nginx:
+    enabled: False
+    config: '- module: nginx'
+
+
+# --------------- PACKETBEAT ------------------------------------------------
+# Given you may not want to install packetbeat on every server the default is set to False
+# You should override this variable in the host_vars for the host(s) you want packetbeat to installed on.
+install_packetbeat: False
+
+# Network interface to use.
+packetbeat_interfaces: 'any'
+
+# Ports packetbeat should listen to
+packetbeat_http_ports: [80, 443, 8080, 8000, 5000, 8002]
+packetbeat_amqp_ports: [5672]
+packetbeat_cassandra_ports: [9042]
+packetbeat_dns_ports: [53]
+packetbeat_memcache_ports: [11211]
+packetbeat_mysql_ports: [3306]
+packetbeat_pgsql_ports: [5432]
+packetbeat_redis_ports: [6379]
+packetbeat_thrift_ports: [9090]
+packetbeat_mongodb_ports: [27017]
+packetbeat_nfs_ports: [2049]
+
+# --------------- METRICBEAT -------------------------------------------------
+install_metricbeat: True
 
 # These are the services that ansible will automatically detect and enable when using service_auto_check
 # If it discovers that the service is installed it will automatically set the enabled variable to True

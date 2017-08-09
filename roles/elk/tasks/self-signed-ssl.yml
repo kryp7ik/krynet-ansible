@@ -1,0 +1,25 @@
+---
+
+- name: ssl | adding subjectAltName to openssl.cnf
+  lineinfile:
+    path: '/etc/pki/tls/openssl.cnf'
+    insertafter: '\[ v3_ca \]'
+    line: 'subjectAltName = IP: {{ hostvars[inventory_hostname]["ansible_eth0"]["ipv4"]["address"] }}'
+    state: present
+
+- name: ssl | checking if ssl certificate exists
+  stat:
+    path: '{{ ssl_cert_path }}'
+  register: cert_stats
+
+- name: ssl | generating self-signed certificate
+  command: >
+    openssl req -config /etc/pki/tls/openssl.cnf
+    -x509
+    -days 3650
+    -batch
+    -nodes
+    -newkey rsa:2048
+    -keyout {{ ssl_key_path }}
+    -out {{ ssl_cert_path }}
+  when: cert_stats.stat.exists == False

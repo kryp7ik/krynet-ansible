@@ -14,7 +14,8 @@ All of the roles are designed for CentOS / RHEL 7 hosts.
 - [x] Dokuwiki
 - [ ] GlusterFS
 - [ ] NFS Share
-- [ ] ELK Stack
+- [x] ELK Stack Server
+- [x] Beats (Filebeat, Metricbeat, Packetbeat)
 - [ ] NodeJS
 - [ ] Redis
 - [ ] GitLab

@@ -1,18 +1,43 @@
 ---
 
+# -------------- Filebeat & Metricbeat Module Checks ----------------- #
 - name: checking for apache
   command: 'rpm -q httpd'
   register: apache_check
-- set_fact: mb_modules.mb_apache.enabled=True
+- set_fact:
+    mb_modules.mb_apache.enabled: True
+    filebeat_modules.apache.enabled: True
   when: apache_check.stdout.find('is not installed') != -1
 
 
 - name: checking for nginx
   command: 'rpm -q nginx'
   register: nginx_check
-- set_fact: mb_modules.mb_nginx.enabled=True
+- set_fact:
+    mb_modules.mb_nginx.enabled: True
+    filebeat_modules.nginx.enabled: True
   when: nginx_check.stdout.find('is not installed') != -1
 
+
+- name: checking for mysql
+  stat:
+    path: '/etc/my.cnf'
+  register: mysql_check
+- set_fact:
+    mb_modules.mb_mysql.enabled: True
+    filebeat_modules.mysql.enabled: True
+  when: mysql_check.stat.exists
+
+
+- name: checking for auditd
+  stat:
+    path: '/etc/audit/auditd.conf'
+  register: auditd_check
+- set_fact: filebeat_modules.auditd.enabled=True
+  when: auditd_check.stat.exists
+
+
+# -------------- Metricbeat Module Checks ----------------- #
 
 - name: checking for haproxy
   command: 'rpm -q haproxy'
@@ -27,14 +52,6 @@
   register: php_check
 - set_fact: mb_modules.mb_php_fpm.enabled=True
   when: php_check.stat.exists
-
-
-- name: checking for mysql
-  stat:
-    path: '/etc/my.cnf'
-  register: mysql_check
-- set_fact: mb_modules.mb_mysql.enabled=True
-  when: mysql_check.stat.exists
 
 
 - name: checking for redis

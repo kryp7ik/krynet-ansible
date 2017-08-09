@@ -1,6 +1,8 @@
 output {
     elasticsearch {
-        hosts => ["127.0.0.1:9200"]
+        ssl => true
+        cacert => '{{ ssl_ca_path }}'
+        hosts => ["https://{{ inventory_hostname }}:9200"]
         sniffing => true
         manage_template => false
         index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"

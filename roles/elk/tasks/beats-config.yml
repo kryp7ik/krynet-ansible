@@ -1,0 +1,31 @@
+---
+
+# filebeat will remain inactive until the 'beats' role is run on the elk server
+- name: beats config | installing filebeat to get import_dashboards script
+  yum:
+    name: filebeat
+    state: installed
+
+- name: beats config | installing dashboards, index-patterns, search and visualizations
+  command: >
+    /usr/share/filebeat/scripts/import_dashboards
+    -es https://{{ inventory_hostname }}:9200
+    -user '{{ elastic_auth_user }}'
+    -pass '{{ elastic_auth_password }}'
+    -url {{ elastic_beats_config_url }}
+
+- name: beats config | copying geoip-pipeline.json
+  copy:
+    src: 'geoip-pipeline.json'
+    dest: '/usr/share/elasticsearch/geoip-pipeline.json'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: beats config | creating geoip pipeline for packetbeat
+  command: >
+    curl
+    --user {{ elastic_auth_user }}:{{ elastic_auth_password }}
+    -H 'Content-Type: application/json'
+    -XPUT 'https://{{ inventory_hostname }}:9200/_ingest/pipeline/geoip-info'
+    -d@"/usr/share/elasticsearch/geoip-pipeline.json"

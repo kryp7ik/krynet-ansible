@@ -9,7 +9,6 @@
     - 'policycoreutils-python'
     - 'libselinux-python'
     - 'libsemanage-python'
-    - 'rsync'
   tags: ['install']
 
 - name: upgrade all packages

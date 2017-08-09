@@ -17,3 +17,4 @@
     dest: '/etc/filebeat/filebeat.yml'
     mode: 0644
   notify: restart filebeat
+  tags: ['configure']

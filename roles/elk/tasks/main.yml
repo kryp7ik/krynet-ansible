@@ -10,10 +10,13 @@
     key: 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
     state: present
 
+- include: self-signed-ssl.yml
+  when: use_self_signed_ssl
+
 - include: elastic.yml
 
 - include: logstash.yml
 
 - include: kibana.yml
 
-- include: beats.yml
+- include: beats-config.yml

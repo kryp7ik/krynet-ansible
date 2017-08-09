@@ -8,4 +8,4 @@
 
 - include: clustercheck.yml
   when: install_clustercheck
-  tags: ['clustercheck']
+  tags: ['clustercheck', 'install']

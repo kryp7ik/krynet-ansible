@@ -7,6 +7,7 @@
 # https://www.elastic.co/guide/en/beats/filebeat/index.html
 #=========================== Filebeat prospectors =============================
 
+{% if filebeat_log_paths is defined %}
 filebeat.prospectors:
 # Each - is a prospector. Most options can be set at the prospector level, so
 # you can use different prospectors for various configurations.
@@ -50,11 +51,20 @@ filebeat.prospectors:
   # Note: After is the equivalent to previous and before is the equivalent to to next in Logstash
   #multiline.match: after
 
+{% endif %}
+
+#=========================== Filebeat modules ================================
+filebeat.modules:
+  {% for key, value in filebeat_modules %}
+  {% if value.enabled %}
+  {{ value.config }}
+  {% endif %}
+  {% endfor %}
 
 #================================ General =====================================
 # The name of the shipper that publishes the network data. It can be used to group
 # all the transactions sent by a single shipper in the web interface.
-#name:
+name: {{ ansible_hostname }}
 
 # The tags of the shipper are included in their own field with each
 # transaction published.
@@ -68,31 +78,33 @@ filebeat.prospectors:
 #================================ Outputs =====================================
 # Configure what outputs to use when sending the data collected by the beat.
 # Multiple outputs may be used.
+
+{% if beats_output_elastic %}
 #-------------------------- Elasticsearch output ------------------------------
 
-#output.elasticsearch:
-  # Array of hosts to connect to.
-  # hosts: ["{{ elk_server }}:9200"]
-  # Optional protocol and basic auth credentials.
-  #protocol: "https"
-  #username: "elastic"
-  #password: "changeme"
+output.elasticsearch:
+  hosts: ["{{ elk_server }}:9200"]
+  protocol: "{{ beats_elastic_protocol }}"
+  username: "{{ beats_elastic_username }}"
+  password: "{{ beats_elastic_password }}"
 
+  {% if beats_elastic_protocol == 'https' %}
+  ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
+  ssl.certificate: '{{ beats_ssl_cert }}'
+  ssl.key: '{{ beats_ssl_key }}'
+  {% endif %}
+{% endif %}
+
+{% if beats_output_logstash %}
 #----------------------------- Logstash output --------------------------------
 output.logstash:
-  # The Logstash hosts
   hosts: ["{{ elk_server }}:5044"]
-
-  # Optional SSL. By default is off.
-  # List of root certificates for HTTPS server verifications
-  ssl.certificate_authorities: ["{{ elk_ssl_cert_local_path }}"]
-
-  # Certificate for SSL client authentication
-  #ssl.certificate: "/etc/pki/client/cert.pem"
-
-  # Client Certificate Key
-  #ssl.key: "/etc/pki/client/cert.key"
-
+  {% if beats_logstash_ssl %}
+  ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
+  ssl.certificate: '{{ beats_ssl_cert }}'
+  ssl.key: '{{ beats_ssl_key }}'
+  {% endif %}
+{% endif %}
 #================================ Logging =====================================
 
 # Sets log level. The default log level is info.

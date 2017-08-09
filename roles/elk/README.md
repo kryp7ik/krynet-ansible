@@ -11,17 +11,101 @@ variable is True.
 
 Role Variables
 --------------
+Important authentication variables to override
+
+    xpack_ldap_bind_dn: "cn=directory manager"
+    xpack_ldap_bind_password: 'changeme'
+    elastic_auth_user: 'admin'
+    elastic_auth_password: 'changeme'
+    
+    # If using htpasswd with nginx change these as well
+    kibana_nginx_htpasswd_user: 'elkadmin'
+    kibana_nginx_htpasswd_password: 'changeme'
+    
+Default Variables
 
     java_package: 'java-1.8.0-openjdk.x86_64'
     
-    # Logstash
-    logstash_ssl_key: '/etc/pki/tls/private/logstash-forwarder.key'
-    logstash_ssl_crt: '/etc/pki/tls/certs/logstash-forwarder.crt'
+    # URL to get zip archive of beats dashboards, index-patterns, search and visualizations
+    elastic_beats_config_url: 'https://artifacts.elastic.co/downloads/beats/beats-dashboards/beats-dashboards-5.5.1.zip'
     
-    # Kibana
+    # The original locations of the SSL files.  These will be linked to the elastic config directory also.
+    ssl_key_path: '/etc/pki/tls/private/elastic.key'
+    ssl_cert_path: '/etc/pki/tls/certs/elastic.pem'
+    ssl_ca_path: '/etc/ipa/ca.crt'
+    
+    # If this option is set to true openssl will be used to create a self signed certificate.
+    # the ssl_key_path and ssl_cert_path should be set to the locations in which you want the certificate and key to reside
+    # The ssl_ca_path should be set to use the same file as the ssl_cert_path if using self-signed.
+    use_self_signed_ssl: False
+    
+    # ---------  Elastic Search ------------------------
+    # enable x-pack machine learning -------------------
+    xpack_ml_enabled: 'true'
+    
+    # enable x-pack monitoring -------------------------
+    xpack_monitoring: 'true'
+    
+    # enable x-pack security ---------------------------
+    xpack_security_enabled: 'true'
+    xpack_accept_default_password: 'false'
+    
+    
+    # x-pack ssl settings ------------------------------
+    
+    # Due to Elasticsearch's permissions there must be a link or copy of all SSL files in the elastic config directory.
+    # Ansible will automatically create the /etc/elasticsearch/certs folder to place the links to the SSL files based on the
+    # paths defined above.
+    # If you want to change where these files are located you will also have to edit the roles/elk/tasks/elastic.yml file
+    # to ensure that the directory you plan to use gets created with the proper permissions.
+    xpack_ssl_key: '/etc/elasticsearch/certs/elastic.key'
+    xpack_ssl_cert: '/etc/elasticsearch/certs/elastic.pem'
+    xpack_ssl_ca: '/etc/elasticsearch/certs/ca.crt'
+    
+    
+    # x-pack ldap settings -----------------------------
+    
+    # the bind dn and password.  These are only used to check users on the LDAP server
+    xpack_ldap_bind_dn: "cn=directory manager"
+    xpack_ldap_bind_password: 'changeme'
+    
+    # base DN to use when searching for users
+    xpack_ldap_user_search_base_dn: "cn=users,cn=accounts,dc=ipa,dc=krynet,dc=com"
+    xpack_ldap_user_search_attribute: 'uid'
+    
+    # base DN to use when searching for groups
+    xpack_ldap_group_search_base_dn: "cn=groups,cn=accounts,dc=ipa,dc=krynet,dc=com"
+    
+    # Location of role_mapping.yml file.  This is the recommended default path from the installation
+    xpack_ldap_role_mapping_file: "/etc/elasticsearch/x-pack/role_mapping.yml"
+    xpack_ldap_unmapped_groups_as_roles: 'false'
+    
+    ldap_server_urls:
+      - 'ldaps://ipa.krynet.com:636'
+      - 'ldaps://iparep.krynet.com:636'
+    
+    # --------- Logstash -------------------------------
+    # By default logstash will use the same certificate as elasticsearch. Optionally change these variables to use different certs
+    logstash_ssl_key: '{{ ssl_key_path }}'
+    logstash_ssl_crt: '{{ ssl_cert_path }}'
+    
+    # Credentials for logstash to use when connecting to elastic search
+    # If LDAP is working correctly it can use any credentials from there with valid permissions
+    elastic_auth_user: 'admin'
+    elastic_auth_password: 'changeme'
+    
+    # --------- Kibana ----------------------------------
     kibana_configure_nginx: True
-    kibana_nginx_listen_port: 80
     kibana_nginx_server_name: '{{ inventory_hostname }}'
+    
+    # By default kibana will use the same certificate as elasticsearch. Optionally change these variables to use different certs
+    kibana_ssl_key: '{{ ssl_key_path }}'
+    kibana_ssl_cert: '{{ ssl_cert_path }}'
+    
+    # This option is not necessary if SSL and LDAP Authentication are configured properly
+    kibana_nginx_enable_htpasswd: False
+    kibana_nginx_htpasswd_user: 'elkadmin'
+    kibana_nginx_htpasswd_password: 'changeme'
     kibana_nginx_htpasswd_file: '/etc/nginx/htpasswd.users'
 
 Dependencies

@@ -51,7 +51,7 @@ node.name: {{ inventory_hostname }}
 # ---------------------------------- Network -----------------------------------
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
-#
+# The current setting will bind to the internal IPv4 address, hostname, localhost and 127.0.0.1
 network.host: ["{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address']", "127.0.0.1", "localhost", "{{ inventory_hostname }}"]
 # network.bind_host:
 #
@@ -103,6 +103,20 @@ xpack.security.authc.accept_default_password: {{ xpack_accept_default_password }
 # xpack.security.authc.anonymous.roles
 # xpack.security.authc.anonymous.authz_exception
 
+xpack.ssl.key: {{ xpack_ssl_key }}
+xpack.ssl.certificate: {{ xpack_ssl_cert }}
+xpack.ssl.certificate_authorities: ["{{ xpack_ssl_ca }}"]
+xpack.security.http.ssl.enabled: true
+# These settings can be used if you plan on using different certificates for http and transport
+# xpack.security.http.ssl.key: "/etc/elasticsearch/certs/elastic.key"
+# xpack.security.http.ssl.certificate: "/etc/elasticsearch/certs/elastic.pem"
+# xpack.security.http.ssl.certificate_authorities: ["/etc/elasticsearch/certs/ca.crt"]
+xpack.security.transport.ssl.enabled: true
+# These settings can be used if you plan on using different certificates for http and transport
+# xpack.security.transport.ssl.key: "/etc/elasticsearch/certs/elastic.key"
+# xpack.security.transport.ssl.certificate: "/etc/elasticsearch/certs/elastic.pem"
+# xpack.security.transport.ssl.certificate_authorities: ["/etc/elasticsearch/certs/ca.crt"]
+
 xpack.security.authc.realms:
   ldap1:
     type: ldap
@@ -120,4 +134,4 @@ xpack.security.authc.realms:
       role_mapping: {{ xpack_ldap_role_mapping_file }}
     unmapped_groups_as_roles: {{ xpack_ldap_unmapped_groups_as_roles }}
     ssl:
-      certificate_authorities: {{ xpack_ldap_ca_file }}
+      certificate_authorities: {{ xpack_ssl_ca }}

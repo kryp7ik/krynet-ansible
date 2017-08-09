@@ -13,10 +13,13 @@ metricbeat.modules:
 {{ value.config }}
 {% endif %}
 {% endfor %}
+
 #================================ General =====================================
 # The name of the shipper that publishes the network data. It can be used to group
 # all the transactions sent by a single shipper in the web interface.
+
 name: {{ ansible_hostname }}
+
 # The tags of the shipper are included in their own field with each
 # transaction published.
 #tags: ["service-X", "web-tier"]
@@ -27,29 +30,33 @@ name: {{ ansible_hostname }}
 #================================ Outputs =====================================
 # Configure what outputs to use when sending the data collected by the beat.
 # Multiple outputs may be used.
+
+{% if beats_output_elastic %}
 #-------------------------- Elasticsearch output ------------------------------
+
 output.elasticsearch:
-  # Array of hosts to connect to.
-  #hosts: ["{{ elk_server }}:9200"]
-  # Optional protocol and basic auth credentials.
-  #protocol: "https"
-  #username: "elastic"
-  #password: "changeme"
+  hosts: ["{{ elk_server }}:9200"]
+  protocol: "{{ beats_elastic_protocol }}"
+  username: "{{ beats_elastic_username }}"
+  password: "{{ beats_elastic_password }}"
 
+  {% if beats_elastic_protocol == 'https' %}
+  ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
+  ssl.certificate: '{{ beats_ssl_cert }}'
+  ssl.key: '{{ beats_ssl_key }}'
+  {% endif %}
+{% endif %}
+
+{% if beats_output_logstash %}
 #----------------------------- Logstash output --------------------------------
-#output.logstash:
-  # The Logstash hosts
+output.logstash:
   hosts: ["{{ elk_server }}:5044"]
-
-  # Optional SSL. By default is off.
-  # List of root certificates for HTTPS server verifications
-  ssl.certificate_authorities: ["{{ elk_ssl_cert_local_path }}"]
-
-  # Certificate for SSL client authentication
-  #ssl.certificate: "/etc/pki/client/cert.pem"
-
-  # Client Certificate Key
-  #ssl.key: "/etc/pki/client/cert.key"
+  {% if beats_logstash_ssl %}
+  ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
+  ssl.certificate: '{{ beats_ssl_cert }}'
+  ssl.key: '{{ beats_ssl_key }}'
+  {% endif %}
+{% endif %}
 
 #================================ Logging =====================================
 
