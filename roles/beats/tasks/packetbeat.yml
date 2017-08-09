@@ -5,12 +5,6 @@
     name: packetbeat
     state: installed
 
-- name: packetbeat | starting and enabling packetbeat service
-  service:
-    name: packetbeat
-    state: started
-    enabled: yes
-
 - name: packetbeat | copying configuration file
   template:
     src: 'packetbeat.yml.j2'
@@ -18,3 +12,9 @@
     mode: 0644
   notify: restart packetbeat
   tags: ['configure']
+
+- name: packetbeat | starting and enabling packetbeat service
+  service:
+    name: packetbeat
+    state: started
+    enabled: yes:q

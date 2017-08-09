@@ -8,7 +8,7 @@
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_apache': {'enabled': True }}, recursive=True) }}"
     filebeat_modules: "{{ filebeat_modules | combine({ 'apache': {'enabled': True }}, recursive=True) }}"
-  when: apache_check.stdout.find('is not installed') != -1
+  when: apache_check.rc == 0
 
 
 - name: checking for nginx
@@ -18,7 +18,7 @@
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_nginx': {'enabled': True }}, recursive=True) }}"
     filebeat_modules: "{{ filebeat_modules | combine({ 'nginx': {'enabled': True }}, recursive=True) }}"
-  when: nginx_check.stdout.find('is not installed') != -1
+  when: nginx_check.rc == 0
 
 
 - name: checking for mysql
@@ -48,7 +48,7 @@
   register: haproxy_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_haproxy': {'enabled': True }}, recursive=True) }}"
-  when: haproxy_check.stdout.find('is not installed') != -1
+  when: haproxy_check.rc == 0
 
 
 - name: checking for php-fpm
@@ -66,7 +66,7 @@
   register: redis_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_redis': {'enabled': True }}, recursive=True) }}"
-  when: redis_check.stdout.find('is not installed') != -1
+  when: redis_check.rc == 0
 
 
 - name: checking for ceph
@@ -84,7 +84,7 @@
   register: couchbase_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_couchbase': {'enabled': True }}, recursive=True) }}"
-  when: couchbase_check.stdout.find('is not installed') != -1
+  when: couchbase_check.rc == 0
 
 
 - name: checking for docker
@@ -111,7 +111,7 @@
   register: postgresql_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_postgresql': {'enabled': True }}, recursive=True) }}"
-  when: postgresql_check.stdout.find('is not installed') != -1
+  when: postgresql_check.rc == 0
 
 
 - name: checking for zookeeper
@@ -120,4 +120,4 @@
   register: zookeeper_check
 - set_fact:
     mb_modules: "{{ mb_modules | combine({ 'mb_zoo_keeper': {'enabled': True }}, recursive=True) }}"
-  when: zookeeper_check.stdout.find('is not installed') != -1
+  when: zookeeper_check.rc == 0

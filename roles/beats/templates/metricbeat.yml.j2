@@ -8,7 +8,7 @@
 #==========================  Modules configuration ============================
 metricbeat.modules:
 #------------------------------- System Module -------------------------------
-{% for key, value in mb_modules %}
+{% for key, value in mb_modules.iteritems() %}
 {% if value.enabled %}
 {{ value.config }}
 {% endif %}
@@ -41,6 +41,7 @@ output.elasticsearch:
   password: "{{ beats_elastic_password }}"
 
   {% if beats_elastic_protocol == 'https' %}
+
   ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
   ssl.certificate: '{{ beats_ssl_cert }}'
   ssl.key: '{{ beats_ssl_key }}'

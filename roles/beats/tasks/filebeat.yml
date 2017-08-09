@@ -5,12 +5,6 @@
     name: filebeat
     state: installed
 
-- name: filebeat | starting and enabling filebeat service
-  service:
-    name: filebeat
-    state: started
-    enabled: yes
-
 - name: filebeat | copying configuration file
   template:
     src: 'filebeat.yml.j2'
@@ -18,3 +12,9 @@
     mode: 0644
   notify: restart filebeat
   tags: ['configure']
+
+- name: filebeat | starting and enabling filebeat service
+  service:
+    name: filebeat
+    state: started
+    enabled: yes

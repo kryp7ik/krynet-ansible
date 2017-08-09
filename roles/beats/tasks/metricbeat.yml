@@ -5,12 +5,6 @@
     name: metricbeat
     state: installed
 
-- name: metricbeat | starting and enabling metricbeat service
-  service:
-    name: metricbeat
-    state: started
-    enabled: yes
-
 - name: metricbeat | copying configuration file
   template:
     src: 'metricbeat.yml.j2'
@@ -18,3 +12,9 @@
     mode: 0644
   notify: restart metricbeat
   tags: ['configure']
+
+- name: metricbeat | starting and enabling metricbeat service
+  service:
+    name: metricbeat
+    state: started
+    enabled: yes

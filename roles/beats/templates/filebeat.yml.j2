@@ -16,9 +16,9 @@ filebeat.prospectors:
 - input_type: log
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
-    {% for path in filebeat_log_paths %}
-    - {{ path }}
-    {% endfor %}
+{% for path in filebeat_log_paths %}
+{{ path | indent(4, true) }}
+{% endfor %}
 
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
@@ -55,11 +55,11 @@ filebeat.prospectors:
 
 #=========================== Filebeat modules ================================
 filebeat.modules:
-  {% for key, value in filebeat_modules %}
-  {% if value.enabled %}
-  {{ value.config }}
-  {% endif %}
-  {% endfor %}
+{% for key, value in filebeat_modules.iteritems() %}
+{% if value.enabled %}
+{{ value.config | indent(0, true) }}
+{% endif %}
+{% endfor %}
 
 #================================ General =====================================
 # The name of the shipper that publishes the network data. It can be used to group
@@ -89,6 +89,7 @@ output.elasticsearch:
   password: "{{ beats_elastic_password }}"
 
   {% if beats_elastic_protocol == 'https' %}
+
   ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
   ssl.certificate: '{{ beats_ssl_cert }}'
   ssl.key: '{{ beats_ssl_key }}'

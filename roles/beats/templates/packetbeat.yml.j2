@@ -34,16 +34,16 @@ packetbeat.protocols:
 - type: amqp
   # Configure the ports where to listen for AMQP traffic. You can disable
   # the AMQP protocol by commenting out the list of ports.
-  ports: {{ packetbeat_amqp_ports | to_nice_yml }}
+  ports: {{ packetbeat_amqp_ports | to_nice_yaml }}
 
 - type: cassandra
   #Cassandra port for traffic monitoring.
-  ports: {{ packetbeat_cassandra_ports | to_nice_yml }}
+  ports: {{ packetbeat_cassandra_ports | to_nice_yaml }}
 
 - type: dns
   # Configure the ports where to listen for DNS traffic. You can disable
   # the DNS protocol by commenting out the list of ports.
-  ports: {{ packetbeat_dns_ports | to_nice_yml }}
+  ports: {{ packetbeat_dns_ports | to_nice_yaml }}
 
   # include_authorities controls whether or not the dns.authorities field
   # (authority resource records) is added to messages.
@@ -56,42 +56,42 @@ packetbeat.protocols:
 - type: http
   # Configure the ports where to listen for HTTP traffic. You can disable
   # the HTTP protocol by commenting out the list of ports.
-  ports: {{ packetbeat_http_ports | to_nice_yml }}
+  ports: {{ packetbeat_http_ports | to_nice_yaml }}
 
 - type: memcache
   # Configure the ports where to listen for memcache traffic. You can disable
   # the Memcache protocol by commenting out the list of ports.
-  ports: {{ packetbeat_memcache_ports | to_nice_yml }}
+  ports: {{ packetbeat_memcache_ports | to_nice_yaml }}
 
 - type: mysql
   # Configure the ports where to listen for MySQL traffic. You can disable
   # the MySQL protocol by commenting out the list of ports.
-  ports: {{ packetbeat_mysql_ports | to_nice_yml }}
+  ports: {{ packetbeat_mysql_ports | to_nice_yaml }}
 
 - type: pgsql
   # Configure the ports where to listen for Pgsql traffic. You can disable
   # the Pgsql protocol by commenting out the list of ports.
-  ports: {{ packetbeat_pgsql_ports | to_nice_yml }}
+  ports: {{ packetbeat_pgsql_ports | to_nice_yaml }}
 
 - type: redis
   # Configure the ports where to listen for Redis traffic. You can disable
   # the Redis protocol by commenting out the list of ports.
-  ports: {{ packetbeat_redis_ports | to_nice_yml }}
+  ports: {{ packetbeat_redis_ports | to_nice_yaml }}
 
 - type: thrift
   # Configure the ports where to listen for Thrift-RPC traffic. You can disable
   # the Thrift-RPC protocol by commenting out the list of ports.
-  ports: {{ packetbeat_thrift_ports | to_nice_yml }}
+  ports: {{ packetbeat_thrift_ports | to_nice_yaml }}
 
 - type: mongodb
   # Configure the ports where to listen for MongoDB traffic. You can disable
   # the MongoDB protocol by commenting out the list of ports.
-  ports: {{ packetbeat_mongodb_ports | to_nice_yml }}
+  ports: {{ packetbeat_mongodb_ports | to_nice_yaml }}
 
 - type: nfs
   # Configure the ports where to listen for NFS traffic. You can disable
   # the NFS protocol by commenting out the list of ports.
-  ports: {{ packetbeat_nfs_ports | to_nice_yml }}
+  ports: {{ packetbeat_nfs_ports | to_nice_yaml }}
 
 #================================ General =====================================
 
@@ -137,6 +137,7 @@ output.elasticsearch:
   pipeline: geoip-info
 
   {% if beats_elastic_protocol == 'https' %}
+
   ssl.certificate_authorities: ["{{ beats_ssl_ca }}"]
   ssl.certificate: '{{ beats_ssl_cert }}'
   ssl.key: '{{ beats_ssl_key }}'

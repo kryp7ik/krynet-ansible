@@ -31,8 +31,9 @@ install_filebeat: True
 
 # filebeat configuration option of where to retrieve log files
 # NOTE: you may not want to include log files that would be retrieved by one of the filebeat modules
+# Ensure that you include the hyphen at the beg
 filebeat_log_paths:
-  - '/var/log/*.log'
+  - '- /var/log/*.log'
 
 # Filebeat modules.  If you're using the service_auto_check ansible will automatically enable the relevant modules
 filebeat_modules:
