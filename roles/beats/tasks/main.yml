@@ -14,8 +14,9 @@
     mode: 0644
 
 - name: beats | requesting certificate from ipa server
-  command: 'ipa-getcert request -K host/$(hostname) -k /etc/pki/tls/private/$(hostname).key -f /etc/pki/tls/certs/$(hostname).pem'
-    creates: '/etc/pki/tls/certs/{{ inventory_hostname }}.pem'
+  command: "ipa-getcert request -K host/{{ ansible_fqdn }} -k /etc/pki/tls/private/{{ ansible_fqdn + '.key' }} -f /etc/pki/tls/certs/{{ ansible_fqdn + '.pem' }}"
+  args:
+    creates: "/etc/pki/tls/certs/{{ ansible_fqdn + '.pem' }}"
   when: ipa_getcert
 
 - include: service-auto-check.yml
