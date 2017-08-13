@@ -1,0 +1,25 @@
+---
+
+- name: installing glusterfs packages (1/2)
+  yum:
+    name: '{{ gluster_release_package }}'
+    state: present
+
+- name: installing glusterfs packages (2/2)
+  yum:
+    name: 'glusterfs-server'
+    state: present
+
+- name: opening firewall ports
+  firewalld:
+    port: '{{ item }}'
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items: gluster_firewall_ports
+
+- name: starting and enabling glusterd
+  service:
+    name: glusterd
+    state: started
+    enabled: yes

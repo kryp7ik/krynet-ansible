@@ -1,0 +1,15 @@
+---
+
+- include: install.yml
+  tags: ['install']
+
+- name: probing peers
+  shell: 'gluster peer probe {{ item }}'
+  delegate_to: '{{ gluster_cluster_nodes[0] }}'
+  run_once: True
+  with_items: '{{ gluster_cluster_nodes }}'
+  when: item != gluster_cluster_nodes[0]
+  tags: ['configure','gluster_probe']
+
+- include: create-volume.yml
+  tags: ['configure','gluster_create_vol']

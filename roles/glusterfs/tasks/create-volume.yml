@@ -1,0 +1,22 @@
+---
+
+- name: creating bricks directories
+  file:
+    name: '{{ item }}'
+    state: directory
+  with_itmes: gluster_bricks
+
+- name: creating gluster volume
+  gluster_volume:
+    state: present
+    name: '{{ gluster_volume_name }}'
+    bricks: '{{ gluster_bricks | join(",") }}'
+    rebalance: '{{ gluster_rebalance }}'
+    cluster: '{{ gluster_cluster_nodes }}'
+  run_once: True
+
+- name: starting gluster volume
+  gluster_volume:
+    name: '{{ gluster_volume_name }}'
+    state: started
+  run_once: True
