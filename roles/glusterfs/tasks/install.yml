@@ -16,7 +16,13 @@
     permanent: true
     immediate: true
     state: enabled
-  with_items: gluster_firewall_ports
+  with_items:
+    - '24007-24009/tcp'
+    - '49152-49160/tcp'
+    - '38465-38467/tcp'
+    - '111/tcp'
+    - '111/udp'
+    - '2049/tcp'
 
 - name: starting and enabling glusterd
   service:

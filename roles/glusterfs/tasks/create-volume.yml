@@ -2,9 +2,9 @@
 
 - name: creating bricks directories
   file:
-    name: '{{ item }}'
+    name: '{{ item }}/{{ gluster_volume_name }}'
     state: directory
-  with_itmes: gluster_bricks
+  with_items: '{{ gluster_bricks }}'
 
 - name: creating gluster volume
   gluster_volume:
@@ -13,6 +13,7 @@
     bricks: '{{ gluster_bricks | join(",") }}'
     rebalance: '{{ gluster_rebalance }}'
     cluster: '{{ gluster_cluster_nodes }}'
+    force: '{{ gluster_force }}'
   run_once: True
 
 - name: starting gluster volume
