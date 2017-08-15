@@ -1,0 +1,16 @@
+---
+- hosts: nfs_server
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: ipa_principal
+      prompt: 'Enrollment username (principal)'
+      private: no
+
+    - name: ipa_password
+      prompt: 'Enrollment user password'
+  roles:
+    - { role: base, tags: 'base' }
+    - { role: epel, tags: 'epel' }
+    - { role: nfs-kerberos, tags: 'nfs-kerberos-server' }

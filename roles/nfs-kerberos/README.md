@@ -6,6 +6,7 @@ Installs and configures a NFS server with Kerberos authentication on CentOS / RH
 Requirements
 ------------
 
+Also requires the epel repository (yum install epel-release) in order to install python-pip
 You will need to create the folders/volumes that you want NFS to export.
 
 Role Variables
@@ -36,6 +37,7 @@ Example Playbook
 
     - hosts: servers
       roles:
+         - { role: epel }
          - { role: nfs-kerberos }
 
 License

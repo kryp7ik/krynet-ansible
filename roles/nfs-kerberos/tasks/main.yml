@@ -2,8 +2,15 @@
 
 - name: installing nfs packages
   yum:
-    name: 'nfs-utils'
+    name: '{{ item }}'
     state: present
+  with_items:
+    - 'nfs-utils'
+    - 'python-pip'
+
+- name: installing pexpect
+  pip:
+    name: pexpect
 
 - name: obtaining Kerberos ticket
   expect:
