@@ -16,8 +16,7 @@
   expect:
     command: 'kinit {{ ipa_principal }}'
     responses:
-      Question:
-        - '{{ ipa_password }}'
+      (?i)password : "{{ ipa_password }}"
 
 - name: retrieving keytab
   command: 'ipa-getkeytab -p {{ nfs_service_principal }} -k {{ keytab_location }}'
@@ -50,7 +49,7 @@
   command: 'exportfs -arv'
 
 - name: running ipa-client-automount to configure nfs
-  command: 'ipa-client-automount'
+  command: 'ipa-client-automount -U --location default'
 
 - name: starting and enabling services
   service:

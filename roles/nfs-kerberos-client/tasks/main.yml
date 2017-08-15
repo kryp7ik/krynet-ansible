@@ -15,14 +15,13 @@
   expect:
     command: 'kinit {{ ipa_principal }}'
     responses:
-      Question:
-        - '{{ ipa_password }}'
+      (?i)password : "{{ ipa_password }}"
 
 - name: enabling sssd with mkhomedir option
   command: 'authconfig --update --enablemkhomedir --enablesssd --enablesssdauth'
 
 - name: running ipa-client-automount to configure nfs
-  command: 'ipa-client-automount'
+  command: 'ipa-client-automount -U --location default'
 
 - name: starting and enabling nfs services
   service:
