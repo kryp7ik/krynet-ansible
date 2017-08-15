@@ -1,0 +1,44 @@
+---
+
+- name: ganesha | installing packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - 'glusterfs-ganesha'
+    - 'nfs-ganesha'
+    - 'nfs-ganesha-gluster'
+
+- name: ganesha | opening firewall (1/2)
+  firewalld:
+    service: '{{ item }}'
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items:
+    - 'nlm'
+    - 'nfs'
+    - 'rpc-bind'
+    - 'high-availability'
+    - 'mountd'
+    - 'rquota'
+
+- name: ganesha | opening firewall (2/2)
+  firewalld:
+    port: '{{ item }}'
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items:
+    - '662/tcp'
+    - '662/udp'
+
+- name: ganesha | starting and enabling ganesha
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: yes
+  with_items:
+    - 'nfs-ganesha'
+    - 'pcsd'
+    - 'pacemaker'

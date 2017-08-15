@@ -1,0 +1,60 @@
+---
+
+- name: installing nfs packages
+  yum:
+    name: 'nfs-utils'
+    state: present
+
+- name: obtaining Kerberos ticket
+  expect:
+    command: 'kinit {{ ipa_principal }}'
+    responses:
+      Question:
+        - '{{ ipa_password }}'
+
+- name: retrieving keytab
+  command: 'ipa-getkeytab -p {{ nfs_service_principal }} -k {{ keytab_location }}'
+
+- name: opening firewall ports
+  firewalld:
+    service: 'nfs'
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: SELinux boolean nfs_export
+  seboolean:
+    name: '{{ item }}'
+    state: yes
+    persistent: yes
+  with_items:
+    - 'nfs_export_all_rw'
+    - 'nfs_export_all_ro'
+
+- name: copying exports file
+  template:
+    src: 'exports.j2'
+    dest: '/etc/exports'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: running exportfs
+  command: 'exportfs -arv'
+
+- name: running ipa-client-automount to configure nfs
+  command: 'ipa-client-automount'
+
+- name: starting and enabling services
+  service:
+    name: '{{ item }}'
+    state: restarted
+    enabled: yes
+  with_items:
+    - 'nfs'
+    - 'nfs-server'
+    - 'nfs-secure'
+    - 'nfs-secure-server'
+    - 'nfs-lock'
+    - 'nfs-idmap'
+    - 'rpcbind'

@@ -1,0 +1,17 @@
+---
+- hosts: all
+  remote_user: kryptik
+  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: ipa_principal
+      prompt: 'Enrollment username (principal)'
+      private: no
+
+    - name: ipa_principal_pass
+      prompt: 'Enrollment user password'
+  roles:
+    - { role: base, tags: 'base' }
+    - { role: ipa-client, tags: 'ipa-client' }
+    - { role: nfs-kerberos-client, tags: 'nfs-kerberos-client' }
+    - { role: beats, tags: 'beats' }

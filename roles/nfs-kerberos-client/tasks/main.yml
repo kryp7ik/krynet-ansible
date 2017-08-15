@@ -1,0 +1,35 @@
+---
+
+- name: installing nfs packages
+  yum:
+    name: 'nfs-utils'
+    state: present
+
+- name: SELinux boolean use_nfs_home_dirs
+  seboolean:
+    name: use_nfs_home_dirs
+    state: yes
+    persistent: yes
+
+- name: obtaining Kerberos ticket
+  expect:
+    command: 'kinit {{ ipa_principal }}'
+    responses:
+      Question:
+        - '{{ ipa_password }}'
+
+- name: enabling sssd with mkhomedir option
+  command: 'authconfig --update --enablemkhomedir --enablesssd --enablesssdauth'
+
+- name: running ipa-client-automount to configure nfs
+  command: 'ipa-client-automount'
+
+- name: starting and enabling nfs services
+  service:
+    name: '{{ item }}'
+    state: restarted
+    enabled: yes
+  with_items:
+    - 'rpc-gssd'
+    - 'rpcbind'
+    - 'nfs-idmapd'

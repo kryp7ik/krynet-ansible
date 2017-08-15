@@ -1,0 +1,13 @@
+---
+
+# Keytab variables
+ipa_principal: 'admin'
+ipa_password: 'changeme'
+nfs_service_principal: 'nfs/nfs.krynet.com'
+keytab_location: '/etc/krb5.keytab'
+
+
+# NFS Variables
+nfs_exports:
+  - '/mnt/nfs/home   192.168.1.0/24(rw,sec=krb5:krb5i:krb5p)'
+  - '/mnt/nfs/share  192.168.1.0/24(rw,sec=krb5:krb5i:krb5p)'

@@ -12,8 +12,8 @@ All of the roles are designed for CentOS / RHEL 7 hosts.
 - [x] Nginx
 - [x] PHP-7
 - [x] Dokuwiki
-- [ ] GlusterFS
-- [ ] NFS Share
+- [x] GlusterFS
+- [x] NFS Share
 - [x] ELK Stack Server
 - [x] Beats (Filebeat, Metricbeat, Packetbeat)
 - [ ] NodeJS

@@ -13,3 +13,8 @@
 
 - include: create-volume.yml
   tags: ['configure','gluster_create_vol']
+
+# Not completed
+#- include: nfs-ganesha.yml
+#  when: install_ganesha
+#  tags: ['configure', 'nfs_ganesha']

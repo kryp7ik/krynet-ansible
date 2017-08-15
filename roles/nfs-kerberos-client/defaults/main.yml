@@ -1,0 +1,4 @@
+---
+# Keytab variables
+ipa_principal: 'admin'
+ipa_password: 'changeme'

@@ -13,6 +13,7 @@
     bricks: '{{ gluster_bricks | join(",") }}'
     rebalance: '{{ gluster_rebalance }}'
     cluster: '{{ gluster_cluster_nodes }}'
+    replicas: '{{ gluster_replicas }}'
     force: '{{ gluster_force }}'
   run_once: True
 

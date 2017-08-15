@@ -1,7 +1,8 @@
-Kryp7ik Gluster Cluster
+Kryp7ik Gluster Cluster & Ganesha
 =========
 
-Installs GlusterFS on multiple hosts and creates a volume.  Designed for CentOS / RHEL 7
+Installs GlusterFS on multiple hosts and creates a volume.  Designed for CentOS / RHEL 7.
+Working on NFS Ganesha but it is not completed yet.
 
 Requirements
 ------------
@@ -19,23 +20,32 @@ Role Variables
     
     gluster_release_package: 'centos-release-gluster310'
     
-    gluster_firewall_ports:
-      - '24007-24009/tcp'
-      - '49152-49160/tcp'
-      - '38465-38467/tcp'
-      - '111/tcp'
-      - '111/udp'
-      - '2049/tcp'
-    
     gluster_volume_name: 'share'
     
+    # It is advisable that your gluster share is using a different disk or partition than the root filesystem
+    # This role will not create or mount any disks.
     gluster_bricks:
-      - '/glusterfs/brick1'
+      - '/mnt/glusterfs/brick1'
     
     gluster_rebalance: yes
     
+    # Specify number of nodes that should replicate data
+    gluster_replicas: 2
+    
+    # If using the root partition you will need to set this to yes
+    gluster_force: no
+    
     # Either specify an inventory group or create a list of hosts
     gluster_cluster_nodes: '{{ groups.gluster_cluster }}'
+    
+    
+    # ----------------- NFS Ganesha -------------------------------------------
+    # This part of the role is not completed yet
+    install_ganesha: False
+    
+    ganesha_ha_name: 'ganesha-ha-360'
+    # The HA_CLUSTER_NODES will be set to the nodes defined above in the gluster_cluster_nodes variable
+
 
 Dependencies
 ------------
