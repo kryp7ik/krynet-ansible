@@ -23,10 +23,14 @@
 
 - name: opening firewall ports
   firewalld:
-    service: 'nfs'
+    service: '{{ item }}'
     permanent: yes
     immediate: yes
     state: enabled
+  with_items:
+    - 'nfs'
+    - 'mountd'
+    - 'rpc-bind'
 
 - name: SELinux boolean nfs_export
   seboolean:
