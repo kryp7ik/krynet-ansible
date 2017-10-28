@@ -1,5 +1,5 @@
 # krynet-ansible
-This repository is mainly for learning Ansible and contains playbooks and roles that I'm using to setup my homelab.
+This repository playbooks and roles that I'm using to setup my homelab.
 
 # Roles & Roadmap
 All of the roles are designed for CentOS / RHEL 7 hosts.
